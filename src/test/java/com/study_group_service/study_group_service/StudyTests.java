@@ -4,13 +4,13 @@ import com.study_group_service.study_group_service.dto.study.StudyRoomCategoryDT
 import com.study_group_service.study_group_service.dto.study.StudyRoomDTO;
 import com.study_group_service.study_group_service.dto.users.UsersDTO;
 import com.study_group_service.study_group_service.entity.study.StudyRoom;
-import com.study_group_service.study_group_service.repository.study.StudyCategoryJpaRepository;
-import com.study_group_service.study_group_service.repository.study.StudyRoomJpaRepository;
-import com.study_group_service.study_group_service.repository.users.UsersJpaRepository;
+import com.study_group_service.study_group_service.entity.user.Users;
+import com.study_group_service.study_group_service.enums.Role;
 import com.study_group_service.study_group_service.service.study.StudyCategoryService;
 import com.study_group_service.study_group_service.service.study.StudyRoomService;
 import com.study_group_service.study_group_service.service.users.UsersService;
 import jakarta.transaction.Transactional;
+import org.apache.catalina.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -142,12 +142,13 @@ class StudyTests {
 		assertThat(studyRoom.getRules()).isEqualTo("테스트 규칙");
 	}
 
-//	@Test
-//	void (){
-//	    //given
-//
-//	    //when
-//
-//	    //then
-//	}
+	@Test
+	@DisplayName("스터디룸_참가_인원(id)_조회")
+	void findAllByStudyRoomId(){
+	    //given
+		Users user1 = new Users(1L,"test@test","1234","test","010-1111-1111",LocalDateTime.now(), Role.USER);
+	    //when
+
+	    //then
+	}
 }

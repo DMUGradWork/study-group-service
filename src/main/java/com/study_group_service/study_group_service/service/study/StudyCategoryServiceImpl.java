@@ -2,7 +2,7 @@ package com.study_group_service.study_group_service.service.study;
 
 import com.study_group_service.study_group_service.dto.study.StudyRoomCategoryDTO;
 import com.study_group_service.study_group_service.entity.study.StudyRoomCategory;
-import com.study_group_service.study_group_service.exception.users.UserNotFoundException;
+import com.study_group_service.study_group_service.exception.user.UserNotFoundException;
 import com.study_group_service.study_group_service.mapper.study.StudyCategoryMapper;
 import com.study_group_service.study_group_service.message.ErrorMessage;
 import com.study_group_service.study_group_service.repository.study.StudyCategoryJpaRepository;

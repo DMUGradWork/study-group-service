@@ -1,7 +1,7 @@
 package com.study_group_service.study_group_service.entity.study;
 
 import com.study_group_service.study_group_service.entity.chat.ChatRoom;
-import com.study_group_service.study_group_service.entity.user.Users;
+import com.study_group_service.study_group_service.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +22,7 @@ public class StudyRoom {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_room_host_id", nullable = true)
-    private Users user;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categories_id", nullable = false)

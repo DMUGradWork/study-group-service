@@ -3,12 +3,12 @@ package com.study_group_service.study_group_service.service.chat;
 import com.study_group_service.study_group_service.dto.chat.ChatRoomMessageDTO;
 import com.study_group_service.study_group_service.entity.chat.ChatRoom;
 import com.study_group_service.study_group_service.entity.chat.ChatRoomMessages;
-import com.study_group_service.study_group_service.entity.user.Users;
+import com.study_group_service.study_group_service.entity.user.User;
 import com.study_group_service.study_group_service.mapper.chat.ChatMessageMapper;
 import com.study_group_service.study_group_service.message.ErrorMessage;
 import com.study_group_service.study_group_service.repository.chat.ChatMessageJpaRepository;
 import com.study_group_service.study_group_service.repository.chat.ChatRoomJpaRepository;
-import com.study_group_service.study_group_service.repository.users.UsersJpaRepository;
+import com.study_group_service.study_group_service.repository.user.UserJpaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.Optional;
 public class ChatMessageServiceImpl implements ChatMessageService {
 
     private final ChatRoomJpaRepository chatRoomJpaRepository;
-    private final UsersJpaRepository usersJpaRepository;
+    private final UserJpaRepository userJpaRepository;
     private final ChatMessageJpaRepository chatMessageJpaRepository;
     private final ChatMessageMapper chatMessageMapper;
     private final ErrorMessage errorMessage;
@@ -33,7 +33,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     public void saveMessage(ChatRoomMessageDTO dto) {
         ChatRoom chatRoom = chatRoomJpaRepository.findById(dto.getChatRoomId())
                 .orElseThrow(() -> new EntityNotFoundException(errorMessage.showNoChatRoomMessage()));
-        Users user = usersJpaRepository.findById(dto.getUserId())
+        User user = userJpaRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException(errorMessage.showNoUserMessage()));
 
         ChatRoomMessages message = chatMessageMapper.toEntity(dto, chatRoom, user);

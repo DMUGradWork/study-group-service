@@ -1,12 +1,12 @@
 package com.study_group_service.study_group_service;
 
-import com.study_group_service.study_group_service.dto.users.UsersDTO;
+import com.study_group_service.study_group_service.dto.user.UserDTO;
 import com.study_group_service.study_group_service.enums.Role;
-import com.study_group_service.study_group_service.exception.users.AlreadyEmailExistsException;
-import com.study_group_service.study_group_service.exception.users.UserNotFoundException;
-import com.study_group_service.study_group_service.repository.users.AdminJpaRepository;
-import com.study_group_service.study_group_service.repository.users.UsersJpaRepository;
-import com.study_group_service.study_group_service.service.users.UsersService;
+import com.study_group_service.study_group_service.exception.user.AlreadyEmailExistsException;
+import com.study_group_service.study_group_service.exception.user.UserNotFoundException;
+import com.study_group_service.study_group_service.repository.user.AdminJpaRepository;
+import com.study_group_service.study_group_service.repository.user.UserJpaRepository;
+import com.study_group_service.study_group_service.service.user.UserService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,19 +20,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @SpringBootTest
-public class UsersTest {
+public class UserTest {
 
     @Autowired
-    private UsersJpaRepository usersJpaRepository;
+    private UserJpaRepository userJpaRepository;
 
     @Autowired
     private AdminJpaRepository adminJpaRepository;
 
     @Autowired
-    private UsersService usersService;
+    private UserService userService;
 
-    private UsersDTO createUserDTO(String email, Role role) {
-        return UsersDTO.builder()
+    private UserDTO createUserDTO(String email, Role role) {
+        return UserDTO.builder()
                 .email(email)
                 .password("testPassword")
                 .name("testName")
@@ -47,11 +47,11 @@ public class UsersTest {
     @Transactional
     void shouldReturnAllUsers() {
         // given
-        usersService.setUsers(createUserDTO("user1@test.com", Role.USER));
-        usersService.setUsers(createUserDTO("user2@test.com", Role.USER));
+        userService.setUsers(createUserDTO("user1@test.com", Role.USER));
+        userService.setUsers(createUserDTO("user2@test.com", Role.USER));
 
         // when
-        List<UsersDTO> users = usersService.getUsers();
+        List<UserDTO> users = userService.getUsers();
 
         // then
         assertThat(users).hasSize(2);
@@ -64,14 +64,14 @@ public class UsersTest {
     @Transactional
     void shouldCreateNormalUser() {
         // given
-        UsersDTO userDto = createUserDTO("normal@test.com", Role.USER);
+        UserDTO userDto = createUserDTO("normal@test.com", Role.USER);
 
         // when
-        UsersDTO savedUser = usersService.setUsers(userDto);
+        UserDTO savedUser = userService.setUsers(userDto);
 
         // then
         assertThat(savedUser.getEmail()).isEqualTo("normal@test.com");
-        assertThat(usersJpaRepository.findAll()).hasSize(1);
+        assertThat(userJpaRepository.findAll()).hasSize(1);
         assertThat(adminJpaRepository.findAll()).isEmpty();
     }
 
@@ -80,10 +80,10 @@ public class UsersTest {
     @Transactional
     void shouldCreateAdminUser() {
         // given
-        UsersDTO adminDto = createUserDTO("admin@test.com", Role.ADMIN);
+        UserDTO adminDto = createUserDTO("admin@test.com", Role.ADMIN);
 
         // when
-        UsersDTO savedAdmin = usersService.setUsers(adminDto);
+        UserDTO savedAdmin = userService.setUsers(adminDto);
 
         // then
         assertThat(savedAdmin.getRole()).isEqualTo(Role.ADMIN);
@@ -95,11 +95,11 @@ public class UsersTest {
     @Transactional
     void shouldFindUserByEmail() {
         // given
-        UsersDTO userDto = createUserDTO("find@test.com", Role.USER);
-        usersService.setUsers(userDto);
+        UserDTO userDto = createUserDTO("find@test.com", Role.USER);
+        userService.setUsers(userDto);
 
         // when
-        UsersDTO foundUser = usersService.getUserByEmail("find@test.com");
+        UserDTO foundUser = userService.getUserByEmail("find@test.com");
 
         // then
         assertThat(foundUser.getEmail()).isEqualTo("find@test.com");
@@ -113,7 +113,7 @@ public class UsersTest {
         String nonexistentEmail = "notfound@test.com";
 
         // when & then
-        assertThatThrownBy(() -> usersService.getUserByEmail(nonexistentEmail))
+        assertThatThrownBy(() -> userService.getUserByEmail(nonexistentEmail))
                 .isInstanceOf(UserNotFoundException.class);
     }
 
@@ -122,13 +122,13 @@ public class UsersTest {
     @Transactional
     void shouldDeleteUserById() {
         // given
-        UsersDTO savedUser = usersService.setUsers(createUserDTO("delete@test.com", Role.USER));
+        UserDTO savedUser = userService.setUsers(createUserDTO("delete@test.com", Role.USER));
 
         // when
-        usersService.deleteUser(savedUser.getId());
+        userService.deleteUser(savedUser.getId());
 
         // then
-        assertThatThrownBy(() -> usersService.getUserById(savedUser.getId()))
+        assertThatThrownBy(() -> userService.getUserById(savedUser.getId()))
                 .isInstanceOf(UserNotFoundException.class);
     }
 
@@ -140,7 +140,7 @@ public class UsersTest {
         Long id = 999L;
 
         // when & then
-        assertThatThrownBy(() -> usersService.deleteUser(id))
+        assertThatThrownBy(() -> userService.deleteUser(id))
                 .isInstanceOf(UserNotFoundException.class);
     }
 
@@ -149,12 +149,12 @@ public class UsersTest {
     @Transactional
     void shouldThrowWhenDuplicateEmail() {
         // given
-        UsersDTO user1 = createUserDTO("duplicate2@test.com", Role.USER);
-        usersService.setUsers(user1);
+        UserDTO user1 = createUserDTO("duplicate2@test.com", Role.USER);
+        userService.setUsers(user1);
 
         // when & then
-        UsersDTO user2 = createUserDTO("duplicate2@test.com", Role.USER);
-        assertThatThrownBy(() -> usersService.setUsers(user2))
+        UserDTO user2 = createUserDTO("duplicate2@test.com", Role.USER);
+        assertThatThrownBy(() -> userService.setUsers(user2))
                 .isInstanceOf(AlreadyEmailExistsException.class);
     }
 

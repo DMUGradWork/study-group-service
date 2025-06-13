@@ -6,10 +6,10 @@ import com.study_group_service.study_group_service.entity.chat.ChatRoom;
 import com.study_group_service.study_group_service.entity.study.StudyRoomCategory;
 import com.study_group_service.study_group_service.entity.study.StudyRoom;
 import com.study_group_service.study_group_service.entity.study.StudyRoomParticipant;
-import com.study_group_service.study_group_service.entity.user.Users;
+import com.study_group_service.study_group_service.entity.user.User;
 import com.study_group_service.study_group_service.exception.study.StudyRoomNotFoundException;
-import com.study_group_service.study_group_service.exception.users.AlreadyUserException;
-import com.study_group_service.study_group_service.exception.users.UserNotFoundException;
+import com.study_group_service.study_group_service.exception.user.AlreadyUserException;
+import com.study_group_service.study_group_service.exception.user.UserNotFoundException;
 import com.study_group_service.study_group_service.mapper.study.StudyRoomMapper;
 import com.study_group_service.study_group_service.mapper.study.StudyRoomParticipantMapper;
 import com.study_group_service.study_group_service.message.ErrorMessage;
@@ -17,7 +17,7 @@ import com.study_group_service.study_group_service.repository.chat.ChatRoomJpaRe
 import com.study_group_service.study_group_service.repository.study.StudyCategoryJpaRepository;
 import com.study_group_service.study_group_service.repository.study.StudyRoomParticipantJpaRepository;
 import com.study_group_service.study_group_service.repository.study.StudyRoomJpaRepository;
-import com.study_group_service.study_group_service.repository.users.UsersJpaRepository;
+import com.study_group_service.study_group_service.repository.user.UserJpaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ import static com.study_group_service.study_group_service.message.UtilMessage.sh
 public class StudyRoomServiceImpl implements StudyRoomService {
     private final StudyRoomJpaRepository studyRoomJpaRepository;
     private final ChatRoomJpaRepository chatRoomJpaRepository;
-    private final UsersJpaRepository usersJpaRepository;
+    private final UserJpaRepository userJpaRepository;
     private final StudyCategoryJpaRepository studyCategoryJpaRepository;
     private final ErrorMessage errorMessage;
     private final StudyRoomMapper studyRoomMapper;
@@ -78,7 +78,7 @@ public class StudyRoomServiceImpl implements StudyRoomService {
     @Override
     @Transactional
     public StudyRoomDTO setStudyRoom(StudyRoomDTO studyRoomDTO) {
-        Users user = usersJpaRepository.findById(studyRoomDTO.getStudyRoomHostId())
+        User user = userJpaRepository.findById(studyRoomDTO.getStudyRoomHostId())
                 .orElseThrow(() -> new IllegalArgumentException(errorMessage.showNoUserMessage()));
         StudyRoomCategory category = studyCategoryJpaRepository.findById(studyRoomDTO.getCategoriesId())
                 .orElseThrow(() -> new IllegalArgumentException(errorMessage.showNoCategoryMessage()));
@@ -212,7 +212,7 @@ public class StudyRoomServiceImpl implements StudyRoomService {
         StudyRoom room = studyRoomJpaRepository.findById(dto.getStudyRoomId())
                 .orElseThrow(() -> new StudyRoomNotFoundException(errorMessage.showNoStudyRoomMessage()));
 
-        Users user = usersJpaRepository.findById(dto.getUserId())
+        User user = userJpaRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserMessage()));
 
         StudyRoomParticipant participant = StudyRoomParticipant.builder()

@@ -1,6 +1,6 @@
 package com.study_group_service.study_group_service.entity.chat;
 
-import com.study_group_service.study_group_service.entity.user.Users;
+import com.study_group_service.study_group_service.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,7 +23,7 @@ public class ChatRoomMessages {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private Users user;
+    private User user;
 
     private String sender;
 

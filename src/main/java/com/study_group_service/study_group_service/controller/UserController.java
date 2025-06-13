@@ -1,7 +1,7 @@
 package com.study_group_service.study_group_service.controller;
 
-import com.study_group_service.study_group_service.dto.users.UsersDTO;
-import com.study_group_service.study_group_service.service.users.UsersService;
+import com.study_group_service.study_group_service.dto.user.UserDTO;
+import com.study_group_service.study_group_service.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,49 +11,49 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
-public class UsersController {
+public class UserController {
 
-    private final UsersService usersService;
+    private final UserService userService;
 
     // 모든 유저 조회
     @GetMapping
-    public ResponseEntity<List<UsersDTO>> findAllUsers() {
-        usersService.getUsers();
-        return ResponseEntity.ok().body(usersService.getUsers());
+    public ResponseEntity<List<UserDTO>> findAllUsers() {
+        userService.getUsers();
+        return ResponseEntity.ok().body(userService.getUsers());
     }
 
     // 특정 유저 조회(id)
     @GetMapping("/{id}")
-    public ResponseEntity<UsersDTO> findUser(@PathVariable Long id) {
-        usersService.getUserById(id);
+    public ResponseEntity<UserDTO> findUser(@PathVariable Long id) {
+        userService.getUserById(id);
         return ResponseEntity.ok().build();
     }
 
     // 특정 유저 조회(email)
     @GetMapping("/email/{email}")
-    public ResponseEntity<UsersDTO> findUserByEmail(@PathVariable String email) {
-        usersService.getUserByEmail(email);
-        return ResponseEntity.ok().body(usersService.getUserByEmail(email));
+    public ResponseEntity<UserDTO> findUserByEmail(@PathVariable String email) {
+        userService.getUserByEmail(email);
+        return ResponseEntity.ok().body(userService.getUserByEmail(email));
     }
 
     // 회원 생성
     @PostMapping
-    public ResponseEntity<UsersDTO> saveUser(@RequestBody UsersDTO usersDTO) {
-        usersService.setUsers(usersDTO);
+    public ResponseEntity<UserDTO> saveUser(@RequestBody UserDTO userDTO) {
+        userService.setUsers(userDTO);
         return ResponseEntity.ok().build();
     }
 
     // 회원 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        usersService.deleteUser(id);
+        userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
     // 관리자로 변경
     @PutMapping("/{email}")
     public ResponseEntity<Void> updateUserRoleToAdmin(@PathVariable String email) {
-        usersService.updateUserRoleToAdmin(email);
+        userService.updateUserRoleToAdmin(email);
         return ResponseEntity.noContent().build();
     }
 }

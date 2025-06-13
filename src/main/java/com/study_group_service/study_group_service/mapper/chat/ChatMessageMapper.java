@@ -2,7 +2,7 @@ package com.study_group_service.study_group_service.mapper.chat;
 import com.study_group_service.study_group_service.dto.chat.ChatRoomMessageDTO;
 import com.study_group_service.study_group_service.entity.chat.ChatRoom;
 import com.study_group_service.study_group_service.entity.chat.ChatRoomMessages;
-import com.study_group_service.study_group_service.entity.user.Users;
+import com.study_group_service.study_group_service.entity.user.User;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -20,7 +20,7 @@ public class ChatMessageMapper {
                 .build();
     }
 
-    public ChatRoomMessages toEntity(ChatRoomMessageDTO dto, ChatRoom chatRoom, Users user) {
+    public ChatRoomMessages toEntity(ChatRoomMessageDTO dto, ChatRoom chatRoom, User user) {
         return ChatRoomMessages.builder()
                 .chatRoom(chatRoom)
                 .user(user)

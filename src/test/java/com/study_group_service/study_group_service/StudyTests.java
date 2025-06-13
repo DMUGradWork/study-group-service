@@ -2,15 +2,14 @@ package com.study_group_service.study_group_service;
 
 import com.study_group_service.study_group_service.dto.study.StudyRoomCategoryDTO;
 import com.study_group_service.study_group_service.dto.study.StudyRoomDTO;
-import com.study_group_service.study_group_service.dto.users.UsersDTO;
+import com.study_group_service.study_group_service.dto.user.UserDTO;
 import com.study_group_service.study_group_service.entity.study.StudyRoom;
-import com.study_group_service.study_group_service.entity.user.Users;
+import com.study_group_service.study_group_service.entity.user.User;
 import com.study_group_service.study_group_service.enums.Role;
 import com.study_group_service.study_group_service.service.study.StudyCategoryService;
 import com.study_group_service.study_group_service.service.study.StudyRoomService;
-import com.study_group_service.study_group_service.service.users.UsersService;
+import com.study_group_service.study_group_service.service.user.UserService;
 import jakarta.transaction.Transactional;
-import org.apache.catalina.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,15 +25,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 class StudyTests {
 
 	@Autowired private StudyRoomService studyRoomService;
-	@Autowired private UsersService usersService;
+	@Autowired private UserService userService;
 	@Autowired private StudyCategoryService studyCategoryService;
 
-	private UsersDTO defaultUser;
+	private UserDTO defaultUser;
 	private StudyRoomCategoryDTO defaultCategory;
 
 	@BeforeEach
 	void setup() {
-		defaultUser = usersService.setUsers(createUsersDTO(1L, "TestUserName"));
+		defaultUser = userService.setUsers(createUsersDTO(1L, "TestUserName"));
 		defaultCategory = studyCategoryService.setStudyCategory(createCategoryDTO(1L, "TestCategoryName"));
 
 		studyRoomService.setStudyRoom(createRoomDTO("TestName1"));
@@ -58,8 +57,8 @@ class StudyTests {
 		return StudyRoomCategoryDTO.builder().id(id).name(name).build();
 	}
 
-	private UsersDTO createUsersDTO(Long id, String name) {
-		return UsersDTO.builder().id(id).name(name).build();
+	private UserDTO createUsersDTO(Long id, String name) {
+		return UserDTO.builder().id(id).name(name).build();
 	}
 
 	@Test
@@ -146,7 +145,7 @@ class StudyTests {
 	@DisplayName("스터디룸_참가_인원(id)_조회")
 	void findAllByStudyRoomId(){
 	    //given
-		Users user1 = new Users(1L,"test@test","1234","test","010-1111-1111",LocalDateTime.now(), Role.USER);
+		User user1 = new User(1L,"test@test","1234","test","010-1111-1111",LocalDateTime.now(), Role.USER);
 	    //when
 
 	    //then

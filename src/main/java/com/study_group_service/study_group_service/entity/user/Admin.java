@@ -18,7 +18,7 @@ public class Admin {
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    private Users user;
+    private User user;
 
     private String email;
     private String password;

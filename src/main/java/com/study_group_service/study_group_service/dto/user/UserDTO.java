@@ -1,4 +1,4 @@
-package com.study_group_service.study_group_service.dto.users;
+package com.study_group_service.study_group_service.dto.user;
 
 import com.study_group_service.study_group_service.enums.Role;
 import lombok.Builder;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class UsersDTO {
+public class UserDTO {
     private Long id;
     private String email;
     private String password;

@@ -1,16 +1,13 @@
 package com.study_group_service.study_group_service;
 
-import com.study_group_service.study_group_service.dto.chat.ChatRoomDTO;
 import com.study_group_service.study_group_service.dto.chat.ChatRoomMessageDTO;
 import com.study_group_service.study_group_service.dto.study.StudyRoomCategoryDTO;
 import com.study_group_service.study_group_service.dto.study.StudyRoomDTO;
-import com.study_group_service.study_group_service.dto.study.StudyRoomParticipantDTO;
-import com.study_group_service.study_group_service.dto.users.UsersDTO;
+import com.study_group_service.study_group_service.dto.user.UserDTO;
 import com.study_group_service.study_group_service.service.chat.ChatMessageService;
-import com.study_group_service.study_group_service.service.chat.ChatRoomService;
 import com.study_group_service.study_group_service.service.study.StudyCategoryService;
 import com.study_group_service.study_group_service.service.study.StudyRoomService;
-import com.study_group_service.study_group_service.service.users.UsersService;
+import com.study_group_service.study_group_service.service.user.UserService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,11 +23,11 @@ import java.util.List;
 @SpringBootTest
 public class ChatMessageTests {
 
-    private UsersDTO defaultUser;
+    private UserDTO defaultUser;
     private StudyRoomCategoryDTO defaultCategory;
 
     @Autowired
-    private UsersService usersService;
+    private UserService userService;
 
     @Autowired
     private StudyRoomService studyRoomService;
@@ -43,7 +40,7 @@ public class ChatMessageTests {
 
     @BeforeEach
     void setup() {
-        defaultUser = usersService.setUsers(createUsersDTO(1L, "TestUserName"));
+        defaultUser = userService.setUsers(createUsersDTO(1L, "TestUserName"));
         defaultCategory = studyCategoryService.setStudyCategory(createCategoryDTO(1L, "TestCategoryName"));
 
         studyRoomService.setStudyRoom(createRoomDTO("TestName1"));
@@ -67,8 +64,8 @@ public class ChatMessageTests {
         return StudyRoomCategoryDTO.builder().id(id).name(name).build();
     }
 
-    private UsersDTO createUsersDTO(Long id, String name) {
-        return UsersDTO.builder().id(id).name(name).build();
+    private UserDTO createUsersDTO(Long id, String name) {
+        return UserDTO.builder().id(id).name(name).build();
     }
 
     @Test

@@ -1,13 +1,13 @@
-package com.study_group_service.study_group_service.mapper.users;
+package com.study_group_service.study_group_service.mapper.user;
 
 import com.study_group_service.study_group_service.entity.user.Admin;
-import com.study_group_service.study_group_service.entity.user.Users;
+import com.study_group_service.study_group_service.entity.user.User;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AdminMapper {
 
-    public Admin toEntity(Users user) {
+    public Admin toEntity(User user) {
         return Admin.builder()
                 .user(user)
                 .email(user.getEmail())
@@ -16,7 +16,7 @@ public class AdminMapper {
                 .build();
     }
 
-    public Admin updateEntity(Admin admin, Users user) {
+    public Admin updateEntity(Admin admin, User user) {
         return admin.builder()
                 .email(user.getEmail())
                 .password(user.getPassword())

@@ -4,7 +4,7 @@ import com.study_group_service.study_group_service.dto.study.StudyRoomDTO;
 import com.study_group_service.study_group_service.entity.study.StudyRoomCategory;
 import com.study_group_service.study_group_service.entity.study.StudyRoom;
 import com.study_group_service.study_group_service.entity.study.StudyRoomParticipant;
-import com.study_group_service.study_group_service.entity.user.Users;
+import com.study_group_service.study_group_service.entity.user.User;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -27,7 +27,7 @@ public class StudyRoomMapper {
                 .build();
     }
 
-    public StudyRoom toEntity(StudyRoomDTO studyRoomDTO, Users user, StudyRoomCategory category) {
+    public StudyRoom toEntity(StudyRoomDTO studyRoomDTO, User user, StudyRoomCategory category) {
         return StudyRoom.builder()
                 .name(studyRoomDTO.getName())
                 .peopleCount(studyRoomDTO.getPeopleCount())

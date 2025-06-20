@@ -7,7 +7,6 @@ import com.study_group_service.study_group_service.service.chat.ChatMessageServi
 import com.study_group_service.study_group_service.service.chat.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -15,8 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@Controller
 @RequestMapping("/chat")
+@RestController
 public class ChatController {
 
     private final RedisPublisher redisPublisher;

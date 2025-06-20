@@ -20,7 +20,6 @@ public class RedisSubscriber implements MessageListener {
 
     private final ObjectMapper objectMapper;
     private final ChatMessageService chatMessageService;
-    private final ErrorMessage errorMessage;
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
@@ -32,7 +31,7 @@ public class RedisSubscriber implements MessageListener {
             chatMessageService.saveMessage(dto);
 
         } catch (Exception e) {
-            throw new ChatMessageSendException(errorMessage.showSendMessageError());
+            throw new ChatMessageSendException();
         }
     }
 }

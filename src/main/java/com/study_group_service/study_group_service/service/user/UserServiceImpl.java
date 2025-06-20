@@ -68,8 +68,6 @@ public class UserServiceImpl implements UserService {
         }
 
         User users = userMapper.toEntity(userDTO);
-        users.assignDefaultRoleIfNull();
-        users.assignCreatedAtNow();
 
         User savedUser = userJpaRepository.save(users);
 

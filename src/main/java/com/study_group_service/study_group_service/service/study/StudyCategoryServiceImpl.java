@@ -24,7 +24,6 @@ public class StudyCategoryServiceImpl implements StudyCategoryService {
     // 스터디 카테고리 생성
     @Override
     @Transactional
-
     public StudyRoomCategoryDTO setStudyCategory(StudyRoomCategoryDTO studyRoomCategoryDTO) {
         StudyRoomCategory studyRoomCategory = studyCategoryMapper.toEntity(studyRoomCategoryDTO);
         StudyRoomCategory saved = studyCategoryJpaRepository.save(studyRoomCategory);

@@ -3,7 +3,6 @@ package com.study_group_service.study_group_service.config.redis;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study_group_service.study_group_service.dto.chat.ChatRoomMessageDTO;
 import com.study_group_service.study_group_service.exception.chat.ChatMessageSendException;
-import com.study_group_service.study_group_service.message.ErrorMessage;
 import com.study_group_service.study_group_service.service.chat.ChatMessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

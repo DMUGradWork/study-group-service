@@ -17,17 +17,17 @@ public class ErrorMessage {
     private static final String SEND_MESSAGE_ERROR_MESSAGE = "메세지 수신 중 에러 발생 : {}";
     private static final String ALREADY_USE_EMAIL_MESSAGE = "이메일이 이미 존재합니다.";
 
-    public String showNoUserThisChatMessage() {return NO_USER_THIS_CHAT_MESSAGE;}
-    public String showNoUserMessage() {
+    public static String showNoUserThisChatMessage() {return NO_USER_THIS_CHAT_MESSAGE;}
+    public static String showNoUserMessage() {
         return NO_USER_MESSAGE;
     }
-    public String showNoUserEmailMessage() {
+    public static String showNoUserEmailMessage() {
         return NO_USER_EMAIL_MESSAGE;
     }
-    public String showNoCategoryMessage() {return NO_CATEGORY_MESSAGE;}
-    public String showNoStudyRoomMessage() {return NO_STUDY_ROOM_MESSAGE;}
-    public String showNoChatRoomMessage() {return NO_CHAT_ROOM_MESSAGE;}
-    public String showAlreadyUserInStudyMessage() {return ALREADY_USER_IN_STUDY_MESSAGE;}
-    public String showSendMessageError() {return SEND_MESSAGE_ERROR_MESSAGE;}
-    public String showAlreadyUseEmailMessage() {return ALREADY_USE_EMAIL_MESSAGE;}
+    public static String showNoCategoryMessage() {return NO_CATEGORY_MESSAGE;}
+    public static String showNoStudyRoomMessage() {return NO_STUDY_ROOM_MESSAGE;}
+    public static String showNoChatRoomMessage() {return NO_CHAT_ROOM_MESSAGE;}
+    public static String showAlreadyUserInStudyMessage() {return ALREADY_USER_IN_STUDY_MESSAGE;}
+    public static String showSendMessageError() {return SEND_MESSAGE_ERROR_MESSAGE;}
+    public static String showAlreadyUseEmailMessage() {return ALREADY_USE_EMAIL_MESSAGE;}
 }

@@ -1,13 +1,16 @@
 package com.study_group_service.study_group_service.dto.user;
 
 import com.study_group_service.study_group_service.enums.Role;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDTO {
     private Long id;
     private String email;

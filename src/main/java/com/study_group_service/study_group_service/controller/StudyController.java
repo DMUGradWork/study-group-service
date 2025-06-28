@@ -12,12 +12,11 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/study")
+@RequestMapping("/api/study")
 public class StudyController {
 
     private final StudyRoomService studyRoomService;
     private final StudyCategoryService studyCategoryService;
-
 
     // 모든 스터디룸 조회
     /** 성공 **/

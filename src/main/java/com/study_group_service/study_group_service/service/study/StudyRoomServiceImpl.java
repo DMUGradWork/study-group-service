@@ -46,11 +46,9 @@ public class StudyRoomServiceImpl implements StudyRoomService {
     @Transactional
     public List<StudyRoomDTO> getStudyRooms() {
         List<StudyRoom> studyRooms = studyRoomJpaRepository.findAll();
-
         if (studyRooms.isEmpty()) {
             throw new UserNotFoundException(errorMessage.showNoUserMessage());
         }
-
         return studyRoomMapper.studyRoomFromDto(studyRooms);
     }
 
@@ -60,7 +58,6 @@ public class StudyRoomServiceImpl implements StudyRoomService {
     public StudyRoomDTO getStudyRoom(String name) {
         StudyRoom studyRoom = studyRoomJpaRepository.findByName(name)
                 .orElseThrow(() -> new StudyRoomNotFoundException(errorMessage.showNoStudyRoomMessage()));
-
         return studyRoomMapper.toDto(studyRoom);
     }
 
@@ -70,7 +67,6 @@ public class StudyRoomServiceImpl implements StudyRoomService {
     public StudyRoomDTO findByChatRoomId(Long chatRoomId) {
         StudyRoom room = studyRoomJpaRepository.findByChatRoomId(chatRoomId)
                 .orElseThrow(() -> new StudyRoomNotFoundException(errorMessage.showNoStudyRoomMessage()));
-
         return studyRoomMapper.toDto(room);
     }
 

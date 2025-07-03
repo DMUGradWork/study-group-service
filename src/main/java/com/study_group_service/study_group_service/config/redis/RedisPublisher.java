@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 public class RedisPublisher {
 
     private final RedisTemplate<String, Object> redisTemplate;
-
     public void publish(String channel, ChatRoomMessageDTO message) {
         redisTemplate.convertAndSend(channel, message);
     }

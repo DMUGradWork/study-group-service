@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
@@ -25,8 +26,7 @@ public class UserController {
     // 특정 유저 조회(id)
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findUser(@PathVariable Long id) {
-        userService.getUserById(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(userService.getUserById(id));
     }
 
     // 특정 유저 조회(email)
@@ -39,8 +39,7 @@ public class UserController {
     // 회원 생성
     @PostMapping
     public ResponseEntity<UserDTO> saveUser(@RequestBody UserDTO userDTO) {
-        userService.setUsers(userDTO);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(userService.setUsers(userDTO));
     }
 
     // 회원 삭제
@@ -55,5 +54,38 @@ public class UserController {
     public ResponseEntity<Void> updateUserRoleToAdmin(@PathVariable String email) {
         userService.updateUserRoleToAdmin(email);
         return ResponseEntity.noContent().build();
+    }
+
+    // 출석 체크
+    @PostMapping("/{id}/attendance")
+    public ResponseEntity<Void> checkAttendance(@PathVariable Long id) {
+        userService.checkAttendance(id);
+        return ResponseEntity.ok().build();
+    }
+
+    // 방 참여
+    @PostMapping("/{id}/join-room")
+    public ResponseEntity<Void> joinRoom(@PathVariable Long id) {
+        userService.joinRoom(id);
+        return ResponseEntity.ok().build();
+    }
+
+    // 방 퇴장
+    @PostMapping("/{id}/leave-room")
+    public ResponseEntity<Void> leaveRoom(@PathVariable Long id) {
+        userService.leaveRoom(id);
+        return ResponseEntity.ok().build();
+    }
+
+    // 로그인 (이메일+비밀번호)
+    @PostMapping("/login")
+    public ResponseEntity<UserDTO> login(@RequestBody Map<String, String> loginRequest) {
+        String email = loginRequest.get("email");
+        String password = loginRequest.get("password");
+        UserDTO user = userService.getUserByEmail(email);
+        if (user == null || !user.getPassword().equals(password)) {
+            return ResponseEntity.status(401).build();
+        }
+        return ResponseEntity.ok(user);
     }
 }

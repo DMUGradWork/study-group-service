@@ -115,5 +115,26 @@ public class UserServiceImpl implements UserService {
         adminJpaRepository.save(admin);
     }
 
+    @Override
+    @Transactional
+    public void checkAttendance(Long userId) {
+        User user = userJpaRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserMessage()));
+        user.checkAttendance(java.time.LocalDate.now());
+        userJpaRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    // 임시 (회의 후 로직 생성 예정)
+    public void joinRoom(Long userId) {
+    }
+
+    @Override
+    @Transactional
+    // 임시 (회의 후 로직 생성 예정)
+    public void leaveRoom(Long userId) {
+    }
+
 
 }

@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class StudyRoom {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "study_room_id")
     private Long id;
 
@@ -45,6 +45,7 @@ public class StudyRoom {
 
     // 공지 내용
     private String notification;
+    private String password; // 비밀번호 추가
 
     // 참여자 목록
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "studyRoom", cascade = CascadeType.ALL, orphanRemoval = true)

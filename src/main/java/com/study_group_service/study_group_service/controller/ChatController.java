@@ -42,6 +42,13 @@ public class ChatController {
         return ResponseEntity.ok(messages);
     }
 
+    // 채팅방의 모든 메시지 반환
+    @GetMapping("/rooms/{chatRoomId}/all")
+    public ResponseEntity<List<ChatRoomMessageDTO>> getAllMessages(@PathVariable Long chatRoomId) {
+        List<ChatRoomMessageDTO> messages = chatMessageService.getAllMessagesByChatRoomId(chatRoomId);
+        return ResponseEntity.ok(messages);
+    }
+
     // 모든 채팅방 찾기
     /** 성공 **/
     @GetMapping

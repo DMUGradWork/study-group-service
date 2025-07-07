@@ -12,10 +12,12 @@ public class StudyRoomDTO {
     private Long id;
     private String name;
     private Long studyRoomHostId;
+    private String hostName; // 방장 이름 추가
     private Long categoriesId;
     private Long chatId;
     private LocalDateTime created_at;
     private int peopleCount;
     private String rules;
     private String notification;
+    private String password; // 비밀번호 추가
 }

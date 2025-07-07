@@ -18,12 +18,14 @@ public class StudyRoomMapper {
                 .id(studyRoom.getId())
                 .name(studyRoom.getName())
                 .studyRoomHostId(studyRoom.getUser().getId())
+                .hostName(studyRoom.getUser().getName()) // 방장 이름 매핑
                 .categoriesId(studyRoom.getStudyRoomCategory().getId())
                 .chatId(studyRoom.getChatRoom().getId())
                 .created_at(studyRoom.getCreated_at())
                 .peopleCount(studyRoom.getPeopleCount())
                 .rules(studyRoom.getRules())
                 .notification(studyRoom.getNotification())
+                .password(studyRoom.getPassword()) // password 매핑
                 .build();
     }
 
@@ -33,6 +35,7 @@ public class StudyRoomMapper {
                 .peopleCount(studyRoomDTO.getPeopleCount())
                 .rules(studyRoomDTO.getRules())
                 .notification(studyRoomDTO.getNotification())
+                .password(studyRoomDTO.getPassword()) // password 매핑
                 .created_at(LocalDateTime.now())
                 .user(user)
                 .studyRoomCategory(category)

@@ -3,12 +3,20 @@ package com.study_group_service.study_group_service.controller;
 import com.study_group_service.study_group_service.dto.study.StudyRoomCategoryDTO;
 import com.study_group_service.study_group_service.dto.study.StudyRoomDTO;
 import com.study_group_service.study_group_service.dto.study.StudyRoomParticipantDTO;
+import com.study_group_service.study_group_service.entity.study.MeetingVote;
+import com.study_group_service.study_group_service.entity.study.StudyRoomMeeting;
+import com.study_group_service.study_group_service.service.study.MeetingVoteService;
 import com.study_group_service.study_group_service.service.study.StudyCategoryService;
 import com.study_group_service.study_group_service.service.study.StudyRoomService;
+import com.study_group_service.study_group_service.service.study.StudyRoomMeetingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,6 +25,10 @@ public class StudyController {
 
     private final StudyRoomService studyRoomService;
     private final StudyCategoryService studyCategoryService;
+    @Autowired
+    private StudyRoomMeetingService studyRoomMeetingService;
+    @Autowired
+    private MeetingVoteService meetingVoteService;
 
     // 모든 스터디룸 조회
     /** 성공 **/
@@ -160,4 +172,36 @@ public class StudyController {
 
     // 유저의 스터디 그룹 참여 횟수 조회 -> 데이팅이랑 어떻게 연결할지 로직 확인
 
+    @PostMapping("/meeting")
+    public StudyRoomMeeting createMeeting(@RequestBody Map<String, String> request) {
+        Long studyRoomId = Long.parseLong(request.get("studyRoomId"));
+        String title = request.get("title");
+        String duration = request.get("duration");
+        String meetingTimeStr = request.get("meetingTime");
+        LocalDateTime meetingTime = LocalDateTime.parse(meetingTimeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm"));
+        return studyRoomMeetingService.createMeeting(studyRoomId, title, duration, meetingTime);
+    }
+
+    @PostMapping("/meeting/vote")
+    public MeetingVote voteMeeting(@RequestBody Map<String, String> request) {
+        Long meetingId = Long.parseLong(request.get("meetingId"));
+        Long userId = Long.parseLong(request.get("userId"));
+        String vote = request.get("vote");
+        return meetingVoteService.saveVote(meetingId, userId, vote);
+    }
+
+    @GetMapping("/meeting/{meetingId}/votes")
+    public List<MeetingVote> getVotes(@PathVariable Long meetingId) {
+        return meetingVoteService.getVotesForMeeting(meetingId);
+    }
+
+    @GetMapping("/meeting/{meetingId}/approved")
+    public boolean checkApproved(@PathVariable Long meetingId, @RequestParam int participantCount) {
+        return meetingVoteService.isApproved(meetingId, participantCount);
+    }
+
+    @GetMapping("/rooms/{roomId}/meeting")
+    public StudyRoomMeeting getMeetingByRoom(@PathVariable Long roomId) {
+        return studyRoomMeetingService.getMeetingByRoomId(roomId);
+    }
 }

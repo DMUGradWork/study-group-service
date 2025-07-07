@@ -82,6 +82,14 @@ public class StudyRoomServiceImpl implements StudyRoomService {
         StudyRoom studyRoom = studyRoomMapper.toEntity(studyRoomDTO, user, category);
         studyRoomJpaRepository.save(studyRoom);
 
+        // 방장 자동 참여
+        StudyRoomParticipant hostParticipant = StudyRoomParticipant.builder()
+                .studyRoom(studyRoom)
+                .user(user)
+                .joinedAt(LocalDateTime.now())
+                .build();
+        studyRoomParticipantJpaRepository.save(hostParticipant);
+
         ChatRoom chatRoom = ChatRoom.builder()
                 .name(studyRoom.getName())
                 .studyRoom(studyRoom)

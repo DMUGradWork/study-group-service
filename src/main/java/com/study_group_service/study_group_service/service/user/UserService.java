@@ -11,4 +11,7 @@ public interface UserService {
     UserDTO setUsers(UserDTO userDTO);
     void deleteUser(Long id);
     void updateUserRoleToAdmin(String email);
+    void checkAttendance(Long userId);
+    void joinRoom(Long userId);
+    void leaveRoom(Long userId);
 }

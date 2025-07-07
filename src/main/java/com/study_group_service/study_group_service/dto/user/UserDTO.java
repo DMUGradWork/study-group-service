@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Builder
@@ -19,4 +20,7 @@ public class UserDTO {
     private String phone;
     private LocalDateTime created_at;
     private Role role;
+    private Long consecutiveAttendance;
+    private Long roomCount;
+    private LocalDate lastAttendanceDate;
 }

@@ -31,4 +31,6 @@ public class ChatRoomMessages {
     private String content;
 
     private LocalDateTime sentAt;
+
+    private String imageUrl;
 }

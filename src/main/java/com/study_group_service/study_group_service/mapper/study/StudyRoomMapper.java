@@ -25,7 +25,8 @@ public class StudyRoomMapper {
                 .peopleCount(studyRoom.getPeopleCount())
                 .rules(studyRoom.getRules())
                 .notification(studyRoom.getNotification())
-                .password(studyRoom.getPassword()) // password 매핑
+                .password(studyRoom.getPassword())
+                .imageUrl(studyRoom.getImageUrl())
                 .build();
     }
 
@@ -35,7 +36,8 @@ public class StudyRoomMapper {
                 .peopleCount(studyRoomDTO.getPeopleCount())
                 .rules(studyRoomDTO.getRules())
                 .notification(studyRoomDTO.getNotification())
-                .password(studyRoomDTO.getPassword()) // password 매핑
+                .password(studyRoomDTO.getPassword())
+                .imageUrl(studyRoomDTO.getImageUrl())
                 .created_at(LocalDateTime.now())
                 .user(user)
                 .studyRoomCategory(category)

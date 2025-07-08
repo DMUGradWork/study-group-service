@@ -17,6 +17,7 @@ public class ChatMessageMapper {
                 .sender(message.getSender())
                 .content(message.getContent())
                 .sentAt(message.getSentAt())
+                .imageUrl(message.getImageUrl())
                 .build();
     }
 
@@ -27,6 +28,7 @@ public class ChatMessageMapper {
                 .sender(dto.getSender())
                 .content(dto.getContent())
                 .sentAt(dto.getSentAt())
+                .imageUrl(dto.getImageUrl())
                 .build();
     }
 

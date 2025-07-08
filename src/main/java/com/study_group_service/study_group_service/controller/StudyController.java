@@ -17,6 +17,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.util.StringUtils;
+import org.springframework.http.HttpStatus;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequiredArgsConstructor
@@ -168,10 +175,6 @@ public class StudyController {
         return ResponseEntity.ok(studyRoomService.findByChatRoomId(studyRoomId));
     }
 
-    // 스터디 모임 참석 여부 설정 -> 데이팅이랑 어떻게 연결할지 로직 확인
-
-    // 유저의 스터디 그룹 참여 횟수 조회 -> 데이팅이랑 어떻게 연결할지 로직 확인
-
     @PostMapping("/meeting")
     public StudyRoomMeeting createMeeting(@RequestBody Map<String, String> request) {
         Long studyRoomId = Long.parseLong(request.get("studyRoomId"));
@@ -203,5 +206,29 @@ public class StudyController {
     @GetMapping("/rooms/{roomId}/meeting")
     public StudyRoomMeeting getMeetingByRoom(@PathVariable Long roomId) {
         return studyRoomMeetingService.getMeetingByRoomId(roomId);
+    }
+
+    @PostMapping("/upload-image")
+    public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("No file provided");
+        }
+        String uploadDir = System.getProperty("user.dir") + "/uploads/";
+        File dir = new File(uploadDir);
+        if (!dir.exists()) dir.mkdirs();
+        String originalFilename = StringUtils.cleanPath(file.getOriginalFilename());
+        String fileName = System.currentTimeMillis() + "_" + originalFilename;
+        File dest = new File(uploadDir + fileName);
+        try {
+            file.transferTo(dest);
+            String host = request.getServerName();
+            int port = request.getServerPort();
+            String url = "http://" + host + ":" + port + "/uploads/" + fileName;
+            HashMap<String, String> result = new HashMap<>();
+            result.put("url", url);
+            return ResponseEntity.ok(result);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("File upload failed");
+        }
     }
 }

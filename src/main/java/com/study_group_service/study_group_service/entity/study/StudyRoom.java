@@ -28,7 +28,7 @@ public class StudyRoom {
     @JoinColumn(name = "categories_id", nullable = false)
     private StudyRoomCategory studyRoomCategory;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom;
 
@@ -45,7 +45,8 @@ public class StudyRoom {
 
     // 공지 내용
     private String notification;
-    private String password; // 비밀번호 추가
+    private String password;
+    private String imageUrl;
 
     // 참여자 목록
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "studyRoom", cascade = CascadeType.ALL, orphanRemoval = true)

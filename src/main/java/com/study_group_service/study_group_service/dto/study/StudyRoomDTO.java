@@ -21,4 +21,5 @@ public class StudyRoomDTO {
     private String notification;
     private String password;
     private String imageUrl;
+    private String description;
 }

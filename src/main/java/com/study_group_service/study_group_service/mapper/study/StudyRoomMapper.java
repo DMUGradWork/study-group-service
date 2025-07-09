@@ -27,6 +27,7 @@ public class StudyRoomMapper {
                 .notification(studyRoom.getNotification())
                 .password(studyRoom.getPassword())
                 .imageUrl(studyRoom.getImageUrl())
+                .description(studyRoom.getDescription())
                 .build();
     }
 
@@ -38,6 +39,7 @@ public class StudyRoomMapper {
                 .notification(studyRoomDTO.getNotification())
                 .password(studyRoomDTO.getPassword())
                 .imageUrl(studyRoomDTO.getImageUrl())
+                .description(studyRoomDTO.getDescription())
                 .created_at(LocalDateTime.now())
                 .user(user)
                 .studyRoomCategory(category)

@@ -47,6 +47,8 @@ public class StudyRoom {
     private String notification;
     private String password;
     private String imageUrl;
+    // 방 소개
+    private String description;
 
     // 참여자 목록
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "studyRoom", cascade = CascadeType.ALL, orphanRemoval = true)

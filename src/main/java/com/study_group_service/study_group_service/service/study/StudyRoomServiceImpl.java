@@ -57,7 +57,7 @@ public class StudyRoomServiceImpl implements StudyRoomService {
     @Transactional
     public StudyRoomDTO getStudyRoom(String name) {
         StudyRoom studyRoom = studyRoomJpaRepository.findByName(name)
-                .orElseThrow(() -> new StudyRoomNotFoundException(errorMessage.showNoStudyRoomMessage()));
+                .orElseThrow(() -> new StudyRoomNotFoundException());
         return studyRoomMapper.toDto(studyRoom);
     }
 
@@ -66,7 +66,7 @@ public class StudyRoomServiceImpl implements StudyRoomService {
     @Transactional
     public StudyRoomDTO findByChatRoomId(Long chatRoomId) {
         StudyRoom room = studyRoomJpaRepository.findByChatRoomId(chatRoomId)
-                .orElseThrow(() -> new StudyRoomNotFoundException(errorMessage.showNoStudyRoomMessage()));
+                .orElseThrow(() -> new StudyRoomNotFoundException());
         return studyRoomMapper.toDto(room);
     }
 
@@ -214,7 +214,7 @@ public class StudyRoomServiceImpl implements StudyRoomService {
         }
 
         StudyRoom room = studyRoomJpaRepository.findById(dto.getStudyRoomId())
-                .orElseThrow(() -> new StudyRoomNotFoundException(errorMessage.showNoStudyRoomMessage()));
+                .orElseThrow(() -> new StudyRoomNotFoundException());
 
         User user = userJpaRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserMessage()));

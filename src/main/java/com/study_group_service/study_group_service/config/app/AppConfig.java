@@ -1,15 +1,13 @@
-//package com.study_group_service.study_group_service.config;
-//
-//import com.study_group_service.study_group_service.service.study.StudyRoomService;
-//import com.study_group_service.study_group_service.service.study.StudyRoomServiceImpl;
-//
-//public class AppConfig {
-//
-//    public StudyRoomService studyRoomService(){
-//        return new StudyRoomServiceImpl(new MemoryStudyRoomRepository());
-//    };
-//}
+package com.study_group_service.study_group_service.config.app;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/*
-* -> 이건 App 제작할때에 로직 짜는걸로
-* */
+@Configuration
+public class AppConfig implements WebMvcConfigurer {
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/");
+    }
+}

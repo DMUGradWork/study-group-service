@@ -16,6 +16,7 @@ public class ErrorMessage {
     private static final String ALREADY_USER_IN_STUDY_MESSAGE = "이미 이 스터디방에 참여한 유저입니다.";
     private static final String SEND_MESSAGE_ERROR_MESSAGE = "메세지 수신 중 에러 발생 : {}";
     private static final String ALREADY_USE_EMAIL_MESSAGE = "이메일이 이미 존재합니다.";
+    private static final String ALREADY_USE_MEETING_VOTE_MESSAGE = "이미 이 방에 일정이 존재합니다.";
 
     public static String showNoUserThisChatMessage() {return NO_USER_THIS_CHAT_MESSAGE;}
     public static String showNoUserMessage() {
@@ -30,4 +31,5 @@ public class ErrorMessage {
     public static String showAlreadyUserInStudyMessage() {return ALREADY_USER_IN_STUDY_MESSAGE;}
     public static String showSendMessageError() {return SEND_MESSAGE_ERROR_MESSAGE;}
     public static String showAlreadyUseEmailMessage() {return ALREADY_USE_EMAIL_MESSAGE;}
+    public static String showAlreadyUseMeetingMessage() {return ALREADY_USE_MEETING_VOTE_MESSAGE;}
 }

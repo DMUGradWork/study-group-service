@@ -1,4 +1,4 @@
-package com.study_group_service.study_group_service.config;
+package com.study_group_service.study_group_service.config.webSocket;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;

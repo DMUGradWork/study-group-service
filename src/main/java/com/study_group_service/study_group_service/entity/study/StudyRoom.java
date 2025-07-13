@@ -37,7 +37,6 @@ public class StudyRoom {
     @Column(name = "study_room_name")
     private String name;
 
-    // 최대 10명
     private int peopleCount;
 
     // 규칙 저장

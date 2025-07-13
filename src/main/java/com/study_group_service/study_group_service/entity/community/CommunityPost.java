@@ -23,7 +23,7 @@ public class CommunityPost {
     private Long authorId;
     private String authorName;
 
-    private String codeLanguage; // 예: java, c, python 등 (nullable)
+    private String codeLanguage;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

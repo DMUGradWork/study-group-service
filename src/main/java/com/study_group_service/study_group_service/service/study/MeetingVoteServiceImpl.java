@@ -46,7 +46,6 @@ public class MeetingVoteServiceImpl implements MeetingVoteService {
         List<MeetingVote> votes = voteRepo.findByMeetingId(meetingId);
         long yesCount = votes.stream().filter(v -> "yes".equals(v.getVote())).count();
         if (yesCount > participantCount / 2) {
-            // 과반수 찬성: meeting.participants에 모든 참여자 추가
             StudyRoomMeeting meeting = meetingRepo.findById(meetingId).orElseThrow();
             List<StudyRoomParticipant> participants = participantRepo.findByStudyRoomId(meeting.getStudyRoom().getId());
             Set<User> users = participants.stream().map(StudyRoomParticipant::getUser).collect(Collectors.toSet());

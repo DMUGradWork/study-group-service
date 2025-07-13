@@ -56,7 +56,4 @@ public class ChatController {
         chatRoomService.getChatRooms();
         return ResponseEntity.ok(chatRoomService.getChatRooms());
     }
-
-    // 모든 전송 메세지 조회할지 고민 -> 다수 데이터가 쌓일 시 소모가 너무 클 것 같음.
-
 }

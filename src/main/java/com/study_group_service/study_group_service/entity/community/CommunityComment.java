@@ -23,6 +23,7 @@ public class CommunityComment {
     private String content;
 
     private Long authorId;
+
     private String authorName;
 
     private String codeLanguage;

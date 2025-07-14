@@ -18,7 +18,7 @@ public class StudyRoomMapper {
                 .id(studyRoom.getId())
                 .name(studyRoom.getName())
                 .studyRoomHostId(studyRoom.getUser().getId())
-                .hostName(studyRoom.getUser().getName()) // 방장 이름 매핑
+                .hostName(studyRoom.getUser().getName())
                 .categoriesId(studyRoom.getStudyRoomCategory().getId())
                 .chatId(studyRoom.getChatRoom().getId())
                 .created_at(studyRoom.getCreated_at())

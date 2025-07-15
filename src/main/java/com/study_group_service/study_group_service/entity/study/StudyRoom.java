@@ -46,6 +46,7 @@ public class StudyRoom {
     private String notification;
     private String password;
     private String imageUrl;
+
     // 방 소개
     private String description;
 

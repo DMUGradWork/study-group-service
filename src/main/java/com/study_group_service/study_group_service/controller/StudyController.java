@@ -32,10 +32,8 @@ public class StudyController {
 
     private final StudyRoomService studyRoomService;
     private final StudyCategoryService studyCategoryService;
-    @Autowired
-    private StudyRoomMeetingService studyRoomMeetingService;
-    @Autowired
-    private MeetingVoteService meetingVoteService;
+    private final StudyRoomMeetingService studyRoomMeetingService;
+    private final MeetingVoteService meetingVoteService;
 
     // 모든 스터디룸 조회
     /** 성공 **/

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static com.study_group_service.study_group_service.message.UtilMessage.showChatMessage;
 import static com.study_group_service.study_group_service.message.UtilMessage.showRoomMessage;
@@ -177,12 +178,12 @@ public class StudyRoomServiceImpl implements StudyRoomService {
     @Override
     @Transactional
     public void deleteStudyRoomParticipants(Long studyRoomId, Long userId) {
-        StudyRoomParticipant studyRoomParticipant = studyRoomParticipantJpaRepository
-                .findByUserIdAndStudyRoomId(studyRoomId, userId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        errorMessage.showNoUserThisChatMessage() + showRoomMessage() + studyRoomId + showChatMessage() + userId));
-
-        studyRoomParticipantJpaRepository.delete(studyRoomParticipant);
+        Optional<StudyRoomParticipant> participantOpt = studyRoomParticipantJpaRepository
+                .findByUserIdAndStudyRoomId(userId, studyRoomId);
+        
+        if (participantOpt.isPresent()) {
+            studyRoomParticipantJpaRepository.delete(participantOpt.get());
+        }
     }
 
     // 유저 -> 스터디룸 리스트 조회

@@ -2,6 +2,8 @@ package com.study_group_service.study_group_service.service.user;
 
 import com.study_group_service.study_group_service.dto.user.UserDTO;
 import com.study_group_service.study_group_service.entity.user.Admin;
+import com.study_group_service.study_group_service.event.user.UserEvent;
+import com.study_group_service.study_group_service.event.user.UserEventPublisher;
 import com.study_group_service.study_group_service.entity.user.User;
 import com.study_group_service.study_group_service.enums.Role;
 import com.study_group_service.study_group_service.exception.user.AlreadyEmailExistsException;
@@ -26,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final ErrorMessage errorMessage;
     private final UserMapper userMapper;
     private final AdminMapper adminMapper;
+    private final UserEventPublisher userEventPublisher;
 
     // 모든 회원 조회
     @Override
@@ -81,7 +84,17 @@ public class UserServiceImpl implements UserService {
                         .build())
                 .ifPresent(adminJpaRepository::save);
 
-        return userMapper.toDto(savedUser);
+        UserDTO result = userMapper.toDto(savedUser);
+
+        userEventPublisher.publish(UserEvent.builder()
+                .type(UserEvent.Type.CREATED)
+                .userId(savedUser.getId())
+                .email(savedUser.getEmail())
+                .name(savedUser.getName())
+                .role(savedUser.getRole().name())
+                .build());
+
+        return result;
     }
 
     // 특정 회원 삭제
@@ -92,6 +105,14 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserMessage()));
 
         userJpaRepository.delete(user);
+
+        userEventPublisher.publish(UserEvent.builder()
+                .type(UserEvent.Type.DELETED)
+                .userId(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .role(user.getRole().name())
+                .build());
     }
 
     // 관리자로 변경
@@ -113,6 +134,14 @@ public class UserServiceImpl implements UserService {
                 .orElseGet(() -> adminMapper.toEntity(user));
 
         adminJpaRepository.save(admin);
+
+        userEventPublisher.publish(UserEvent.builder()
+                .type(UserEvent.Type.UPDATED)
+                .userId(user.getId())
+                .email(user.getEmail())
+                .name(user.getName())
+                .role(user.getRole().name())
+                .build());
     }
 
     @Override

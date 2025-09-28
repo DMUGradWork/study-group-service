@@ -4,8 +4,11 @@ import com.study_group_service.study_group_service.entity.community.CommunityCom
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface CommunityCommentRepository extends JpaRepository<CommunityComment, Long> {
     List<CommunityComment> findByPostId(Long postId);
     int countByPostId(Long postId);
+    Optional<CommunityComment> findByUuid(UUID uuid);
 } 

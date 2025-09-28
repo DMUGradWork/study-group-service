@@ -2,8 +2,6 @@ package com.study_group_service.study_group_service.service.user;
 
 import com.study_group_service.study_group_service.dto.user.UserDTO;
 import com.study_group_service.study_group_service.entity.user.Admin;
-import com.study_group_service.study_group_service.event.user.UserEvent;
-import com.study_group_service.study_group_service.event.user.UserEventPublisher;
 import com.study_group_service.study_group_service.entity.user.User;
 import com.study_group_service.study_group_service.enums.Role;
 import com.study_group_service.study_group_service.exception.user.AlreadyEmailExistsException;
@@ -18,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +27,6 @@ public class UserServiceImpl implements UserService {
     private final ErrorMessage errorMessage;
     private final UserMapper userMapper;
     private final AdminMapper adminMapper;
-    private final UserEventPublisher userEventPublisher;
 
     // 모든 회원 조회
     @Override
@@ -62,6 +60,16 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(user);
     }
 
+    // 특정 회원 조회(UUID)
+    @Override
+    @Transactional
+    public UserDTO getUserByUuid(UUID uuid) {
+        User user = userJpaRepository.findByUuid(uuid)
+                .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserMessage()));
+
+        return userMapper.toDto(user);
+    }
+
     // 회원 저장
     @Override
     @Transactional
@@ -84,17 +92,7 @@ public class UserServiceImpl implements UserService {
                         .build())
                 .ifPresent(adminJpaRepository::save);
 
-        UserDTO result = userMapper.toDto(savedUser);
-
-        userEventPublisher.publish(UserEvent.builder()
-                .type(UserEvent.Type.CREATED)
-                .userId(savedUser.getId())
-                .email(savedUser.getEmail())
-                .name(savedUser.getName())
-                .role(savedUser.getRole().name())
-                .build());
-
-        return result;
+        return userMapper.toDto(savedUser);
     }
 
     // 특정 회원 삭제
@@ -105,14 +103,16 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserMessage()));
 
         userJpaRepository.delete(user);
+    }
 
-        userEventPublisher.publish(UserEvent.builder()
-                .type(UserEvent.Type.DELETED)
-                .userId(user.getId())
-                .email(user.getEmail())
-                .name(user.getName())
-                .role(user.getRole().name())
-                .build());
+    // 특정 회원 삭제(UUID)
+    @Override
+    @Transactional
+    public void deleteUserByUuid(UUID uuid) {
+        User user = userJpaRepository.findByUuid(uuid)
+                .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserMessage()));
+
+        userJpaRepository.delete(user);
     }
 
     // 관리자로 변경
@@ -134,20 +134,21 @@ public class UserServiceImpl implements UserService {
                 .orElseGet(() -> adminMapper.toEntity(user));
 
         adminJpaRepository.save(admin);
-
-        userEventPublisher.publish(UserEvent.builder()
-                .type(UserEvent.Type.UPDATED)
-                .userId(user.getId())
-                .email(user.getEmail())
-                .name(user.getName())
-                .role(user.getRole().name())
-                .build());
     }
 
     @Override
     @Transactional
     public void checkAttendance(Long userId) {
         User user = userJpaRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserMessage()));
+        user.checkAttendance(java.time.LocalDate.now());
+        userJpaRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void checkAttendanceByUuid(UUID userUuid) {
+        User user = userJpaRepository.findByUuid(userUuid)
                 .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserMessage()));
         user.checkAttendance(java.time.LocalDate.now());
         userJpaRepository.save(user);
@@ -162,7 +163,19 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     // 임시 (회의 후 로직 생성 예정)
+    public void joinRoomByUuid(UUID userUuid) {
+    }
+
+    @Override
+    @Transactional
+    // 임시 (회의 후 로직 생성 예정)
     public void leaveRoom(Long userId) {
+    }
+
+    @Override
+    @Transactional
+    // 임시 (회의 후 로직 생성 예정)
+    public void leaveRoomByUuid(UUID userUuid) {
     }
 
 

@@ -49,6 +49,12 @@ public class UserController {
         return ResponseEntity.ok().body(userService.setUsers(userDTO));
     }
 
+    // 사용자 프로필 업데이트
+    @PutMapping("/uuid/{uuid}/profile")
+    public ResponseEntity<UserDTO> updateUserProfile(@PathVariable UUID uuid, @RequestBody UserDTO userDTO) {
+        return ResponseEntity.ok().body(userService.updateUserProfile(uuid, userDTO));
+    }
+
     // 회원 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {

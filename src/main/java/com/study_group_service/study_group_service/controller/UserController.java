@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/user")
@@ -27,6 +28,12 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> findUser(@PathVariable Long id) {
         return ResponseEntity.ok().body(userService.getUserById(id));
+    }
+
+    // 특정 유저 조회(uuid)
+    @GetMapping("/uuid/{uuid}")
+    public ResponseEntity<UserDTO> findUserByUuid(@PathVariable UUID uuid) {
+        return ResponseEntity.ok().body(userService.getUserByUuid(uuid));
     }
 
     // 특정 유저 조회(email)
@@ -49,6 +56,13 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    // 회원 삭제 (uuid)
+    @DeleteMapping("/uuid/{uuid}")
+    public ResponseEntity<Void> deleteUserByUuid(@PathVariable UUID uuid) {
+        userService.deleteUserByUuid(uuid);
+        return ResponseEntity.noContent().build();
+    }
+
     // 관리자로 변경
     @PutMapping("/{email}")
     public ResponseEntity<Void> updateUserRoleToAdmin(@PathVariable String email) {
@@ -63,6 +77,13 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    // 출석 체크 (uuid)
+    @PostMapping("/uuid/{uuid}/attendance")
+    public ResponseEntity<Void> checkAttendanceByUuid(@PathVariable UUID uuid) {
+        userService.checkAttendanceByUuid(uuid);
+        return ResponseEntity.ok().build();
+    }
+
     // 방 참여
     @PostMapping("/{id}/join-room")
     public ResponseEntity<Void> joinRoom(@PathVariable Long id) {
@@ -70,10 +91,24 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    // 방 참여 (uuid)
+    @PostMapping("/uuid/{uuid}/join-room")
+    public ResponseEntity<Void> joinRoomByUuid(@PathVariable UUID uuid) {
+        userService.joinRoomByUuid(uuid);
+        return ResponseEntity.ok().build();
+    }
+
     // 방 퇴장
     @PostMapping("/{id}/leave-room")
     public ResponseEntity<Void> leaveRoom(@PathVariable Long id) {
         userService.leaveRoom(id);
+        return ResponseEntity.ok().build();
+    }
+
+    // 방 퇴장 (uuid)
+    @PostMapping("/uuid/{uuid}/leave-room")
+    public ResponseEntity<Void> leaveRoomByUuid(@PathVariable UUID uuid) {
+        userService.leaveRoomByUuid(uuid);
         return ResponseEntity.ok().build();
     }
 

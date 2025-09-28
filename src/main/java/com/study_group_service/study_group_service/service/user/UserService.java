@@ -11,6 +11,7 @@ public interface UserService {
     UserDTO getUserByUuid(UUID uuid);
     UserDTO getUserByEmail(String email);
     UserDTO setUsers(UserDTO userDTO);
+    UserDTO updateUserProfile(UUID userUuid, UserDTO userDTO);
     void deleteUser(Long id);
     void deleteUserByUuid(UUID uuid);
     void updateUserRoleToAdmin(String email);

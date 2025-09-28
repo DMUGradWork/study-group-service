@@ -18,8 +18,6 @@ import com.study_group_service.study_group_service.repository.study.StudyCategor
 import com.study_group_service.study_group_service.repository.study.StudyRoomParticipantJpaRepository;
 import com.study_group_service.study_group_service.repository.study.StudyRoomJpaRepository;
 import com.study_group_service.study_group_service.repository.user.UserJpaRepository;
-import com.study_group_service.study_group_service.event.study.StudyRoomEvent;
-import com.study_group_service.study_group_service.event.study.StudyRoomEventPublisher;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +38,6 @@ public class StudyRoomServiceImpl implements StudyRoomService {
     private final StudyRoomMapper studyRoomMapper;
     private final StudyRoomParticipantMapper studyRoomParticipantMapper;
     private final StudyRoomParticipantJpaRepository studyRoomParticipantJpaRepository;
-    private final StudyRoomEventPublisher studyRoomEventPublisher;
 
     // 모든 스터디 조회
     @Override
@@ -100,20 +97,6 @@ public class StudyRoomServiceImpl implements StudyRoomService {
         studyRoom.updateChatRoom(chatRoom);
         studyRoomJpaRepository.save(studyRoom);
 
-        // 스터디룸 생성 이벤트 발행
-        studyRoomEventPublisher.publish(StudyRoomEvent.builder()
-                .type(StudyRoomEvent.Type.CREATED)
-                .studyRoomId(studyRoom.getId())
-                .studyRoomName(studyRoom.getName())
-                .hostId(studyRoom.getUser().getId())
-                .hostName(studyRoom.getUser().getName())
-                .category(studyRoom.getStudyRoomCategory().getName())
-                .description(studyRoom.getDescription())
-                .peopleCount(studyRoom.getPeopleCount())
-                .rules(studyRoom.getRules())
-                .notification(studyRoom.getNotification())
-                .build());
-
         return studyRoomMapper.toDto(studyRoom);
     }
 
@@ -123,20 +106,6 @@ public class StudyRoomServiceImpl implements StudyRoomService {
     public void deleteStudyRoom(Long id) {
         StudyRoom studyRoom = studyRoomJpaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(errorMessage.showNoStudyRoomMessage() + " " + id));
-
-        // 스터디룸 삭제 이벤트 발행
-        studyRoomEventPublisher.publish(StudyRoomEvent.builder()
-                .type(StudyRoomEvent.Type.DELETED)
-                .studyRoomId(studyRoom.getId())
-                .studyRoomName(studyRoom.getName())
-                .hostId(studyRoom.getUser().getId())
-                .hostName(studyRoom.getUser().getName())
-                .category(studyRoom.getStudyRoomCategory().getName())
-                .description(studyRoom.getDescription())
-                .peopleCount(studyRoom.getPeopleCount())
-                .rules(studyRoom.getRules())
-                .notification(studyRoom.getNotification())
-                .build());
 
         // 연관된 ChatRoom 삭제
         if (studyRoom.getChatRoom() != null) {
@@ -161,21 +130,6 @@ public class StudyRoomServiceImpl implements StudyRoomService {
         studyRoom.updateRules(rules);
 
         StudyRoom saved = studyRoomJpaRepository.save(studyRoom);
-        
-        // 스터디룸 수정 이벤트 발행
-        studyRoomEventPublisher.publish(StudyRoomEvent.builder()
-                .type(StudyRoomEvent.Type.UPDATED)
-                .studyRoomId(saved.getId())
-                .studyRoomName(saved.getName())
-                .hostId(saved.getUser().getId())
-                .hostName(saved.getUser().getName())
-                .category(saved.getStudyRoomCategory().getName())
-                .description(saved.getDescription())
-                .peopleCount(saved.getPeopleCount())
-                .rules(saved.getRules())
-                .notification(saved.getNotification())
-                .build());
-        
         return studyRoomMapper.toDto(saved);
     }
 
@@ -192,21 +146,6 @@ public class StudyRoomServiceImpl implements StudyRoomService {
         studyRoom.updateNotification(notification);
 
         StudyRoom saved = studyRoomJpaRepository.save(studyRoom);
-        
-        // 스터디룸 수정 이벤트 발행
-        studyRoomEventPublisher.publish(StudyRoomEvent.builder()
-                .type(StudyRoomEvent.Type.UPDATED)
-                .studyRoomId(saved.getId())
-                .studyRoomName(saved.getName())
-                .hostId(saved.getUser().getId())
-                .hostName(saved.getUser().getName())
-                .category(saved.getStudyRoomCategory().getName())
-                .description(saved.getDescription())
-                .peopleCount(saved.getPeopleCount())
-                .rules(saved.getRules())
-                .notification(saved.getNotification())
-                .build());
-        
         return studyRoomMapper.toDto(saved);
     }
 
@@ -285,22 +224,6 @@ public class StudyRoomServiceImpl implements StudyRoomService {
                 .build();
 
         studyRoomParticipantJpaRepository.save(participant);
-        
-        // 스터디룸 참여완료 이벤트 발행
-        studyRoomEventPublisher.publish(StudyRoomEvent.builder()
-                .type(StudyRoomEvent.Type.JOINED)
-                .studyRoomId(room.getId())
-                .studyRoomName(room.getName())
-                .hostId(room.getUser().getId())
-                .hostName(room.getUser().getName())
-                .participantId(user.getId())
-                .participantName(user.getName())
-                .category(room.getStudyRoomCategory().getName())
-                .description(room.getDescription())
-                .peopleCount(room.getPeopleCount())
-                .rules(room.getRules())
-                .notification(room.getNotification())
-                .build());
     }
 
 

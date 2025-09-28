@@ -8,6 +8,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -19,6 +20,9 @@ public class StudyRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "study_room_id")
     private Long id;
+
+    @Column(unique = true, nullable = false)
+    private UUID uuid = UUID.randomUUID();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_room_host_id", nullable = true)

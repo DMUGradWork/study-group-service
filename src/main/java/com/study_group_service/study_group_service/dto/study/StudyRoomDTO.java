@@ -3,6 +3,7 @@ package com.study_group_service.study_group_service.dto.study;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Builder(toBuilder = true)
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class StudyRoomDTO {
     private Long id;
+    private UUID uuid;
     private String name;
     private Long studyRoomHostId;
     private String hostName;

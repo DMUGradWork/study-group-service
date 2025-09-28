@@ -3,6 +3,7 @@ package com.study_group_service.study_group_service.entity.community;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -14,6 +15,9 @@ public class CommunityPost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true, nullable = false)
+    private UUID uuid = UUID.randomUUID();
 
     private String title;
 

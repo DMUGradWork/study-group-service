@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -27,6 +28,8 @@ public class User {
     private LocalDateTime created_at = LocalDateTime.now();
     private Long consecutiveAttendance;
     private Long roomCount;
+    
+    private UUID uuid;
 
     private LocalDate lastAttendanceDate;
 

@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -18,6 +19,9 @@ public class ChatRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "chat_room_id")
     private Long id;
+
+    @Column(unique = true, nullable = false)
+    private UUID uuid = UUID.randomUUID();
 
     @Column(name = "chat_room_name")
     private String name;

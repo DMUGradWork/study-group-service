@@ -2,6 +2,7 @@ package com.study_group_service.study_group_service.dto.community;
 
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 public class CommunityPostDTO {
     private Long id;
+    private UUID uuid;
     private String title;
     private String content;
     private Long authorId;

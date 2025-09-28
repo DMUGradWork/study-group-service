@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Getter
 @Builder
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class UserDTO {
     private Long id;
+    private UUID uuid;
     private String email;
     private String password;
     private String name;

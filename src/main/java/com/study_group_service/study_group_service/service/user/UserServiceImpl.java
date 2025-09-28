@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
         UserRegistered userRegisteredEvent = new UserRegistered(
                 savedUser.getUuid(),
                 LocalDateTime.now(),
-                savedUser.getNickname()
+                savedUser.getName()
         );
         eventPublisher.publishEvent(userRegisteredEvent);
 
@@ -115,20 +115,33 @@ public class UserServiceImpl implements UserService {
         User existingUser = userJpaRepository.findByUuid(userUuid)
                 .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserMessage()));
 
-        String oldNickname = existingUser.getNickname();
+        String oldNickname = existingUser.getName();
         
-        // 프로필 정보 업데이트
-        existingUser.setNickname(userDTO.getNickname());
-        existingUser.setPhone(userDTO.getPhone());
+        // 기존 사용자 정보를 기반으로 새로운 DTO 생성 (업데이트할 필드만 변경)
+        UserDTO updatedUserDTO = UserDTO.builder()
+                .id(existingUser.getId())
+                .uuid(existingUser.getUuid())
+                .email(existingUser.getEmail())
+                .password(existingUser.getPassword())
+                .name(userDTO.getName()) // 업데이트된 이름
+                .phone(userDTO.getPhone()) // 업데이트된 전화번호
+                .created_at(existingUser.getCreated_at())
+                .role(existingUser.getRole())
+                .consecutiveAttendance(existingUser.getConsecutiveAttendance())
+                .roomCount(existingUser.getRoomCount())
+                .lastAttendanceDate(existingUser.getLastAttendanceDate())
+                .build();
         
-        User updatedUser = userJpaRepository.save(existingUser);
+        // DTO를 엔티티로 변환하여 저장
+        User updatedUser = userMapper.toEntity(updatedUserDTO);
+        updatedUser = userJpaRepository.save(updatedUser);
 
         // 사용자 프로필 업데이트 이벤트 발행
         UserProfileUpdated profileUpdatedEvent = new UserProfileUpdated(
                 updatedUser.getUuid(),
                 oldNickname,
-                updatedUser.getNickname(),
-                "nickname,phone", // 업데이트된 필드들
+                updatedUser.getName(),
+                "name,phone", // 업데이트된 필드들
                 LocalDateTime.now()
         );
         eventPublisher.publishEvent(profileUpdatedEvent);

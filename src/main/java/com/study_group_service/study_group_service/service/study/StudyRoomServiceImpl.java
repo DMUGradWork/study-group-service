@@ -7,6 +7,9 @@ import com.study_group_service.study_group_service.entity.study.StudyRoomCategor
 import com.study_group_service.study_group_service.entity.study.StudyRoom;
 import com.study_group_service.study_group_service.entity.study.StudyRoomParticipant;
 import com.study_group_service.study_group_service.entity.user.User;
+import com.study_group_service.study_group_service.event.study.StudyRoomCreated;
+import com.study_group_service.study_group_service.event.study.StudyRoomJoined;
+import com.study_group_service.study_group_service.event.study.StudyRoomLeft;
 import com.study_group_service.study_group_service.exception.study.StudyRoomNotFoundException;
 import com.study_group_service.study_group_service.exception.user.AlreadyUserException;
 import com.study_group_service.study_group_service.exception.user.UserNotFoundException;
@@ -21,11 +24,13 @@ import com.study_group_service.study_group_service.repository.user.UserJpaReposi
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +43,7 @@ public class StudyRoomServiceImpl implements StudyRoomService {
     private final StudyRoomMapper studyRoomMapper;
     private final StudyRoomParticipantMapper studyRoomParticipantMapper;
     private final StudyRoomParticipantJpaRepository studyRoomParticipantJpaRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     // 모든 스터디 조회
     @Override
@@ -59,11 +65,29 @@ public class StudyRoomServiceImpl implements StudyRoomService {
         return studyRoomMapper.toDto(studyRoom);
     }
 
+    // UUID로 스터디룸 검색
+    @Override
+    @Transactional
+    public StudyRoomDTO getStudyRoomByUuid(UUID uuid) {
+        StudyRoom studyRoom = studyRoomJpaRepository.findByUuid(uuid)
+                .orElseThrow(() -> new StudyRoomNotFoundException());
+        return studyRoomMapper.toDto(studyRoom);
+    }
+
     // 스터디룸의 채팅룸(ID) 조회
     @Override
     @Transactional
     public StudyRoomDTO findByChatRoomId(Long chatRoomId) {
         StudyRoom room = studyRoomJpaRepository.findByChatRoomId(chatRoomId)
+                .orElseThrow(() -> new StudyRoomNotFoundException());
+        return studyRoomMapper.toDto(room);
+    }
+
+    // UUID로 스터디룸의 채팅룸 조회
+    @Override
+    @Transactional
+    public StudyRoomDTO findByChatRoomUuid(UUID chatRoomUuid) {
+        StudyRoom room = studyRoomJpaRepository.findByChatRoomUuid(chatRoomUuid)
                 .orElseThrow(() -> new StudyRoomNotFoundException());
         return studyRoomMapper.toDto(room);
     }
@@ -95,9 +119,19 @@ public class StudyRoomServiceImpl implements StudyRoomService {
         chatRoomJpaRepository.save(chatRoom);
 
         studyRoom.updateChatRoom(chatRoom);
-        studyRoomJpaRepository.save(studyRoom);
+        StudyRoom savedStudyRoom = studyRoomJpaRepository.save(studyRoom);
 
-        return studyRoomMapper.toDto(studyRoom);
+        // 스터디룸 생성 이벤트 발행
+        StudyRoomCreated studyRoomCreatedEvent = new StudyRoomCreated(
+                savedStudyRoom.getUuid(),
+                user.getUuid(),
+                savedStudyRoom.getName(),
+                savedStudyRoom.getDescription(),
+                LocalDateTime.now()
+        );
+        eventPublisher.publishEvent(studyRoomCreatedEvent);
+
+        return studyRoomMapper.toDto(savedStudyRoom);
     }
 
     // 스터디룸 삭제
@@ -114,6 +148,22 @@ public class StudyRoomServiceImpl implements StudyRoomService {
 
         // StudyRoom 삭제
         studyRoomJpaRepository.deleteById(id);
+    }
+
+    // UUID로 스터디룸 삭제
+    @Override
+    @Transactional
+    public void deleteStudyRoomByUuid(UUID uuid) {
+        StudyRoom studyRoom = studyRoomJpaRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntityNotFoundException(errorMessage.showNoStudyRoomMessage() + " " + uuid));
+
+        // 연관된 ChatRoom 삭제
+        if (studyRoom.getChatRoom() != null) {
+            chatRoomJpaRepository.delete(studyRoom.getChatRoom());
+        }
+
+        // StudyRoom 삭제
+        studyRoomJpaRepository.deleteById(studyRoom.getId());
     }
 
 
@@ -160,12 +210,34 @@ public class StudyRoomServiceImpl implements StudyRoomService {
         studyRoomJpaRepository.save(room);
     }
 
+    // UUID로 스터디룸 공지사항 삭제
+    @Override
+    @Transactional
+    public void deleteNotificationByUuid(UUID uuid) {
+        StudyRoom room = studyRoomJpaRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntityNotFoundException(errorMessage.showNoStudyRoomMessage() + " " + uuid));
+
+        room.updateNotification(null);
+        studyRoomJpaRepository.save(room);
+    }
+
     // 스터디룸 규칙 삭제
     @Override
     @Transactional
     public void deleteRules(Long id) {
         StudyRoom room = studyRoomJpaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(errorMessage.showNoStudyRoomMessage() + " " + id));
+
+        room.updateRules(null);
+        studyRoomJpaRepository.save(room);
+    }
+
+    // UUID로 스터디룸 규칙 삭제
+    @Override
+    @Transactional
+    public void deleteRulesByUuid(UUID uuid) {
+        StudyRoom room = studyRoomJpaRepository.findByUuid(uuid)
+                .orElseThrow(() -> new EntityNotFoundException(errorMessage.showNoStudyRoomMessage() + " " + uuid));
 
         room.updateRules(null);
         studyRoomJpaRepository.save(room);
@@ -179,7 +251,48 @@ public class StudyRoomServiceImpl implements StudyRoomService {
                 .findByUserIdAndStudyRoomId(userId, studyRoomId);
         
         if (participantOpt.isPresent()) {
-            studyRoomParticipantJpaRepository.delete(participantOpt.get());
+            StudyRoomParticipant participant = participantOpt.get();
+            StudyRoom studyRoom = participant.getStudyRoom();
+            User user = participant.getUser();
+            
+            studyRoomParticipantJpaRepository.delete(participant);
+            
+            // 스터디룸 퇴장 이벤트 발행
+            StudyRoomLeft studyRoomLeftEvent = new StudyRoomLeft(
+                    studyRoom.getUuid(),
+                    user.getUuid(),
+                    "USER_LEFT", // 퇴장 이유
+                    LocalDateTime.now()
+            );
+            eventPublisher.publishEvent(studyRoomLeftEvent);
+        }
+    }
+
+    // UUID로 참가 유저 삭제
+    @Override
+    @Transactional
+    public void deleteStudyRoomParticipantsByUuid(UUID studyRoomUuid, UUID userUuid) {
+        StudyRoom studyRoom = studyRoomJpaRepository.findByUuid(studyRoomUuid)
+                .orElseThrow(() -> new EntityNotFoundException(errorMessage.showNoStudyRoomMessage() + " " + studyRoomUuid));
+        
+        User user = userJpaRepository.findByUuid(userUuid)
+                .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserMessage()));
+        
+        Optional<StudyRoomParticipant> participantOpt = studyRoomParticipantJpaRepository
+                .findByUserIdAndStudyRoomId(user.getId(), studyRoom.getId());
+        
+        if (participantOpt.isPresent()) {
+            StudyRoomParticipant participant = participantOpt.get();
+            studyRoomParticipantJpaRepository.delete(participant);
+            
+            // 스터디룸 퇴장 이벤트 발행
+            StudyRoomLeft studyRoomLeftEvent = new StudyRoomLeft(
+                    studyRoom.getUuid(),
+                    user.getUuid(),
+                    "USER_LEFT", // 퇴장 이유
+                    LocalDateTime.now()
+            );
+            eventPublisher.publishEvent(studyRoomLeftEvent);
         }
     }
 
@@ -192,11 +305,37 @@ public class StudyRoomServiceImpl implements StudyRoomService {
         return studyRoomMapper.toDto(participants);
     }
 
+    // UUID로 유저 -> 스터디룸 리스트 조회
+    @Override
+    @Transactional
+    public List<StudyRoomDTO> findStudyRoomsByUserUuid(UUID userUuid) {
+        User user = userJpaRepository.findByUuid(userUuid)
+                .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserMessage()));
+        
+        List<StudyRoomParticipant> participants = studyRoomParticipantJpaRepository.findAllByUserId(user.getId());
+
+        return studyRoomMapper.toDto(participants);
+    }
+
     // 스터디룸 참가 인원(id) 조회
     @Override
     @Transactional
     public List<StudyRoomParticipantDTO> findAllByStudyRoomId(Long studyRoomId) {
         List<StudyRoomParticipant> participants = studyRoomParticipantJpaRepository.findAllByStudyRoomId(studyRoomId);
+
+        return participants.stream()
+                .map(studyRoomParticipantMapper::toDto)
+                .toList();
+    }
+
+    // UUID로 스터디룸 참가 인원 조회
+    @Override
+    @Transactional
+    public List<StudyRoomParticipantDTO> findAllByStudyRoomUuid(UUID studyRoomUuid) {
+        StudyRoom studyRoom = studyRoomJpaRepository.findByUuid(studyRoomUuid)
+                .orElseThrow(() -> new StudyRoomNotFoundException());
+        
+        List<StudyRoomParticipant> participants = studyRoomParticipantJpaRepository.findAllByStudyRoomId(studyRoom.getId());
 
         return participants.stream()
                 .map(studyRoomParticipantMapper::toDto)
@@ -223,7 +362,16 @@ public class StudyRoomServiceImpl implements StudyRoomService {
                 .joinedAt(LocalDateTime.now())
                 .build();
 
-        studyRoomParticipantJpaRepository.save(participant);
+        StudyRoomParticipant savedParticipant = studyRoomParticipantJpaRepository.save(participant);
+
+        // 스터디룸 참가 이벤트 발행
+        StudyRoomJoined studyRoomJoinedEvent = new StudyRoomJoined(
+                room.getUuid(),
+                user.getUuid(),
+                "MEMBER", // 기본 역할
+                LocalDateTime.now()
+        );
+        eventPublisher.publishEvent(studyRoomJoinedEvent);
     }
 
 

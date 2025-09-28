@@ -4,6 +4,8 @@ import com.study_group_service.study_group_service.dto.user.UserDTO;
 import com.study_group_service.study_group_service.entity.user.Admin;
 import com.study_group_service.study_group_service.entity.user.User;
 import com.study_group_service.study_group_service.enums.Role;
+import com.study_group_service.study_group_service.event.user.UserProfileUpdated;
+import com.study_group_service.study_group_service.event.user.UserRegistered;
 import com.study_group_service.study_group_service.exception.user.AlreadyEmailExistsException;
 import com.study_group_service.study_group_service.exception.user.UserNotFoundException;
 import com.study_group_service.study_group_service.mapper.user.AdminMapper;
@@ -13,7 +15,9 @@ import com.study_group_service.study_group_service.repository.user.AdminJpaRepos
 import com.study_group_service.study_group_service.repository.user.UserJpaRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,6 +31,7 @@ public class UserServiceImpl implements UserService {
     private final ErrorMessage errorMessage;
     private final UserMapper userMapper;
     private final AdminMapper adminMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     // 모든 회원 조회
     @Override
@@ -92,7 +97,43 @@ public class UserServiceImpl implements UserService {
                         .build())
                 .ifPresent(adminJpaRepository::save);
 
+        // 사용자 등록 이벤트 발행
+        UserRegistered userRegisteredEvent = new UserRegistered(
+                savedUser.getUuid(),
+                LocalDateTime.now(),
+                savedUser.getNickname()
+        );
+        eventPublisher.publishEvent(userRegisteredEvent);
+
         return userMapper.toDto(savedUser);
+    }
+
+    // 사용자 프로필 업데이트
+    @Override
+    @Transactional
+    public UserDTO updateUserProfile(UUID userUuid, UserDTO userDTO) {
+        User existingUser = userJpaRepository.findByUuid(userUuid)
+                .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserMessage()));
+
+        String oldNickname = existingUser.getNickname();
+        
+        // 프로필 정보 업데이트
+        existingUser.setNickname(userDTO.getNickname());
+        existingUser.setPhone(userDTO.getPhone());
+        
+        User updatedUser = userJpaRepository.save(existingUser);
+
+        // 사용자 프로필 업데이트 이벤트 발행
+        UserProfileUpdated profileUpdatedEvent = new UserProfileUpdated(
+                updatedUser.getUuid(),
+                oldNickname,
+                updatedUser.getNickname(),
+                "nickname,phone", // 업데이트된 필드들
+                LocalDateTime.now()
+        );
+        eventPublisher.publishEvent(profileUpdatedEvent);
+
+        return userMapper.toDto(updatedUser);
     }
 
     // 특정 회원 삭제

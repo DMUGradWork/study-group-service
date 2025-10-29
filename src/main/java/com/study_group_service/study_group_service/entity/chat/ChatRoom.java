@@ -21,6 +21,7 @@ public class ChatRoom {
     private Long id;
 
     @Column(unique = true, nullable = false)
+    @Builder.Default
     private UUID uuid = UUID.randomUUID();
 
     @Column(name = "chat_room_name")
@@ -31,5 +32,13 @@ public class ChatRoom {
     private StudyRoom studyRoom;
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<ChatRoomMessages> messages = new ArrayList<>();
+
+    @PrePersist
+    private void prePersist() {
+        if (this.uuid == null) {
+            this.uuid = UUID.randomUUID();
+        }
+    }
 }

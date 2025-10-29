@@ -22,6 +22,7 @@ public class StudyRoom {
     private Long id;
 
     @Column(unique = true, nullable = false)
+    @Builder.Default
     private UUID uuid = UUID.randomUUID();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,7 +37,8 @@ public class StudyRoom {
     @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom;
 
-    private LocalDateTime created_at;
+    @Builder.Default
+    private LocalDateTime created_at = LocalDateTime.now();
 
     @Column(name = "study_room_name")
     private String name;
@@ -56,7 +58,18 @@ public class StudyRoom {
 
     // 참여자 목록
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "studyRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<StudyRoomParticipant> participants = new ArrayList<>();
+
+    @PrePersist
+    private void prePersist() {
+        if (this.uuid == null) {
+            this.uuid = UUID.randomUUID();
+        }
+        if (this.created_at == null) {
+            this.created_at = LocalDateTime.now();
+        }
+    }
 
     public void updateRules(String rules) {
         this.rules = rules;

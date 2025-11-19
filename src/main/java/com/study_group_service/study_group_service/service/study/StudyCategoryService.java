@@ -1,6 +1,7 @@
-package com.study_group_service.study_group_service.service.study;
+package com.study_group_service.study_group_service.service;
 
-import com.study_group_service.study_group_service.dto.study.StudyRoomCategoryDTO;
+import com.study_group_service.study_group_service.dto.StudyRoomCategoryDTO;
+
 import java.util.List;
 
 public interface StudyCategoryService {

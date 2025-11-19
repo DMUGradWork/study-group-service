@@ -1,16 +1,13 @@
-package com.study_group_service.study_group_service.config.redis;
+package com.study_group_service.study_group_service.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.study_group_service.study_group_service.dto.chat.ChatRoomMessageDTO;
-import com.study_group_service.study_group_service.exception.chat.ChatMessageSendException;
+import com.study_group_service.study_group_service.dto.ChatRoomMessageDTO;
 import com.study_group_service.study_group_service.service.chat.ChatMessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
-
-import static com.study_group_service.study_group_service.message.UtilMessage.showSend;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,12 +22,12 @@ public class RedisSubscriber implements MessageListener {
         try {
             String jsonMessage = new String(message.getBody());
             ChatRoomMessageDTO dto = objectMapper.readValue(jsonMessage, ChatRoomMessageDTO.class);
-            log.info(showSend(), dto);
+            log.info("Redis 수신 {}", dto);
 
             chatMessageService.saveMessage(dto);
 
         } catch (Exception e) {
-            throw new ChatMessageSendException();
+            log.error("Redis 수신 오류", e);
         }
     }
 }

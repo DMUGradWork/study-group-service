@@ -12,7 +12,4 @@ public interface StudyRoomParticipantJpaRepository extends JpaRepository<StudyRo
     List<StudyRoomParticipant> findAllByUserId(Long userId);
     List<StudyRoomParticipant> findAllByStudyRoomId(Long studyRoomId);
     boolean existsByUserIdAndStudyRoomId(Long userId, Long studyRoomId);
-    long countByUserId(Long userId);
-    List<StudyRoomParticipant> findByUserId(Long userId);
-    List<StudyRoomParticipant> findByStudyRoomId(Long studyRoomId);
 }

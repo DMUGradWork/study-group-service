@@ -1,4 +1,4 @@
-package com.study_group_service.study_group_service.config.redis;
+package com.study_group_service.study_group_service.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -16,10 +16,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig {
-    @Bean
-    public ChannelTopic channelTopic() {
-        return new ChannelTopic("chatRoom");
-    }
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {

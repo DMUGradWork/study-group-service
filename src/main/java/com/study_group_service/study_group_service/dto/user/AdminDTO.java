@@ -1,4 +1,4 @@
-package com.study_group_service.study_group_service.dto.user;
+package com.study_group_service.study_group_service.dto.users;
 
 import com.study_group_service.study_group_service.enums.Role;
 import lombok.*;

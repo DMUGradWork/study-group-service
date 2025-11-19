@@ -4,7 +4,7 @@ import com.study_group_service.study_group_service.dto.study.StudyRoomDTO;
 import com.study_group_service.study_group_service.entity.study.StudyRoomCategory;
 import com.study_group_service.study_group_service.entity.study.StudyRoom;
 import com.study_group_service.study_group_service.entity.study.StudyRoomParticipant;
-import com.study_group_service.study_group_service.entity.user.User;
+import com.study_group_service.study_group_service.entity.user.Users;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -18,29 +18,22 @@ public class StudyRoomMapper {
                 .id(studyRoom.getId())
                 .name(studyRoom.getName())
                 .studyRoomHostId(studyRoom.getUser().getId())
-                .hostName(studyRoom.getUser().getName())
                 .categoriesId(studyRoom.getStudyRoomCategory().getId())
                 .chatId(studyRoom.getChatRoom().getId())
-                .created_at(studyRoom.getCreated_at())
+                .createdAt(studyRoom.getCreatedAt())
                 .peopleCount(studyRoom.getPeopleCount())
                 .rules(studyRoom.getRules())
                 .notification(studyRoom.getNotification())
-                .password(studyRoom.getPassword())
-                .imageUrl(studyRoom.getImageUrl())
-                .description(studyRoom.getDescription())
                 .build();
     }
 
-    public StudyRoom toEntity(StudyRoomDTO studyRoomDTO, User user, StudyRoomCategory category) {
+    public StudyRoom toEntity(StudyRoomDTO studyRoomDTO, Users user, StudyRoomCategory category) {
         return StudyRoom.builder()
                 .name(studyRoomDTO.getName())
                 .peopleCount(studyRoomDTO.getPeopleCount())
                 .rules(studyRoomDTO.getRules())
                 .notification(studyRoomDTO.getNotification())
-                .password(studyRoomDTO.getPassword())
-                .imageUrl(studyRoomDTO.getImageUrl())
-                .description(studyRoomDTO.getDescription())
-                .created_at(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .user(user)
                 .studyRoomCategory(category)
                 .build();

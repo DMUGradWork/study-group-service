@@ -1,17 +1,17 @@
-package com.study_group_service.study_group_service.entity.study;
+package com.study_group_service.study_group_service.domain.study;
 
-import com.study_group_service.study_group_service.entity.chat.ChatRoom;
-import com.study_group_service.study_group_service.entity.user.User;
+import com.study_group_service.study_group_service.domain.chat.ChatRoom;
+import com.study_group_service.study_group_service.domain.user.Users;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,28 +21,24 @@ public class StudyRoom {
     @Column(name = "study_room_id")
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    @Builder.Default
-    private UUID uuid = UUID.randomUUID();
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_room_host_id", nullable = true)
-    private User user;
+    private Users user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categories_id", nullable = false)
+    @JoinColumn(name = "categories_id")
     private StudyRoomCategory studyRoomCategory;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom;
 
-    @Builder.Default
-    private LocalDateTime created_at = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     @Column(name = "study_room_name")
     private String name;
 
+    // 최대 10명
     private int peopleCount;
 
     // 규칙 저장
@@ -50,36 +46,9 @@ public class StudyRoom {
 
     // 공지 내용
     private String notification;
-    private String password;
-    private String imageUrl;
-
-    // 방 소개
-    private String description;
 
     // 참여자 목록
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "studyRoom", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
     private List<StudyRoomParticipant> participants = new ArrayList<>();
 
-    @PrePersist
-    private void prePersist() {
-        if (this.uuid == null) {
-            this.uuid = UUID.randomUUID();
-        }
-        if (this.created_at == null) {
-            this.created_at = LocalDateTime.now();
-        }
-    }
-
-    public void updateRules(String rules) {
-        this.rules = rules;
-    }
-
-    public void updateNotification(String notification) {
-        this.notification = notification;
-    }
-
-    public void updateChatRoom(ChatRoom chatRoom) {
-        this.chatRoom = chatRoom;
-    }
 }

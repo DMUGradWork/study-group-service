@@ -1,8 +1,9 @@
-package com.study_group_service.study_group_service.dto.study;
+package com.study_group_service.study_group_service.dto;
 
 import lombok.*;
 
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

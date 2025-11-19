@@ -1,27 +1,22 @@
-package com.study_group_service.study_group_service.dto.study;
+package com.study_group_service.study_group_service.dto;
 
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
-@Builder(toBuilder = true)
+@Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class StudyRoomDTO {
     private Long id;
-    private UUID uuid;
     private String name;
     private Long studyRoomHostId;
-    private String hostName;
     private Long categoriesId;
     private Long chatId;
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
     private int peopleCount;
     private String rules;
     private String notification;
-    private String password;
-    private String imageUrl;
-    private String description;
 }

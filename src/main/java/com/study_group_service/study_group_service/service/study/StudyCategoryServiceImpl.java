@@ -1,9 +1,9 @@
-package com.study_group_service.study_group_service.service.study;
+package com.study_group_service.study_group_service.service;
 
-import com.study_group_service.study_group_service.dto.study.StudyRoomCategoryDTO;
+import com.study_group_service.study_group_service.dto.StudyRoomCategoryDTO;
 import com.study_group_service.study_group_service.entity.study.StudyRoomCategory;
-import com.study_group_service.study_group_service.exception.user.UserNotFoundException;
-import com.study_group_service.study_group_service.mapper.study.StudyCategoryMapper;
+import com.study_group_service.study_group_service.exception.UserNotFoundException;
+import com.study_group_service.study_group_service.mapper.StudyCategoryMapper;
 import com.study_group_service.study_group_service.message.ErrorMessage;
 import com.study_group_service.study_group_service.repository.study.StudyCategoryJpaRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,23 +21,26 @@ public class StudyCategoryServiceImpl implements StudyCategoryService {
     private final ErrorMessage errorMessage;
     private final StudyCategoryMapper studyCategoryMapper;
 
-    // 스터디 카테고리 생성
     @Override
     @Transactional
+    // 스터디 카테고리 생성
     public StudyRoomCategoryDTO setStudyCategory(StudyRoomCategoryDTO studyRoomCategoryDTO) {
         StudyRoomCategory studyRoomCategory = studyCategoryMapper.toEntity(studyRoomCategoryDTO);
         StudyRoomCategory saved = studyCategoryJpaRepository.save(studyRoomCategory);
+
         return studyCategoryMapper.toDto(saved);
     }
 
-    // 스터디 카테고리 조회
+
     @Override
-    @Transactional
+    // 스터디 카테고리 조회
     public List<StudyRoomCategoryDTO> getStudyCategory() {
         List<StudyRoomCategory> categories = studyCategoryJpaRepository.findAll();
+
         if (categories.isEmpty()) {
             throw new UserNotFoundException(errorMessage.showNoCategoryMessage());
         }
+
         return studyCategoryMapper.categoryToDto(categories);
     }
 

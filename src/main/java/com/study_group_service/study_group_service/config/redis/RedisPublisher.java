@@ -1,6 +1,6 @@
-package com.study_group_service.study_group_service.config.redis;
+package com.study_group_service.study_group_service.config;
 
-import com.study_group_service.study_group_service.dto.chat.ChatRoomMessageDTO;
+import com.study_group_service.study_group_service.dto.ChatRoomMessageDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;

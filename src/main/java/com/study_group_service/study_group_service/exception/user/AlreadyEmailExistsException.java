@@ -1,4 +1,4 @@
-package com.study_group_service.study_group_service.exception.user;
+package com.study_group_service.study_group_service.exception.users;
 
 public class AlreadyEmailExistsException extends RuntimeException {
     public AlreadyEmailExistsException(String message) {

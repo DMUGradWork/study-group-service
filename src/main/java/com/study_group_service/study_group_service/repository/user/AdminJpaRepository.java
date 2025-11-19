@@ -1,4 +1,4 @@
-package com.study_group_service.study_group_service.repository.user;
+package com.study_group_service.study_group_service.repository.users;
 
 import com.study_group_service.study_group_service.entity.user.Admin;
 import org.springframework.data.jpa.repository.JpaRepository;

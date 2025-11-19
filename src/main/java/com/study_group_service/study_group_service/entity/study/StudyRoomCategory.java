@@ -1,25 +1,22 @@
-package com.study_group_service.study_group_service.entity.study;
+package com.study_group_service.study_group_service.domain.study;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class StudyRoomCategory {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue
     @Column(name = "categories_id")
     private Long id;
 
     @Column(name = "categories_name")
     private String name;
-
-    @OneToMany(mappedBy = "studyRoomCategory")
-    private List<StudyRoom> studyRooms = new ArrayList<>();
 }

@@ -3,26 +3,5 @@
 -- VALUES (1, 'testuser@example.com', 'password123', '테스트유저', '010-1234-5678', NOW(), 3, NULL, 0);
 -- -- role: 0=USER, 1=ADMIN (EnumType.ORDINAL)
 --
--- -- 스터디룸 카테고리 전체 예시 데이터 (프론트 기준)
--- INSERT INTO study_room_category (categories_name) VALUES ('프로그래밍 / 개발');
--- INSERT INTO study_room_category (categories_name) VALUES ('디자인');
--- INSERT INTO study_room_category (categories_name) VALUES ('외국어');
--- INSERT INTO study_room_category (categories_name) VALUES ('취업 / 이직');
--- INSERT INTO study_room_category (categories_name) VALUES ('데이터 사이언스');
--- INSERT INTO study_room_category (categories_name) VALUES ('모바일 앱 개발');
--- INSERT INTO study_room_category (categories_name) VALUES ('게임 개발');
--- INSERT INTO study_room_category (categories_name) VALUES ('보안 / 네트워크');
--- INSERT INTO study_room_category (categories_name) VALUES ('클라우드 / DevOps');
--- INSERT INTO study_room_category (categories_name) VALUES ('AI / 머신러닝');
--- INSERT INTO study_room_category (categories_name) VALUES ('영상 편집');
--- INSERT INTO study_room_category (categories_name) VALUES ('음악 / 작곡');
--- INSERT INTO study_room_category (categories_name) VALUES ('블로그 / 글쓰기');
--- INSERT INTO study_room_category (categories_name) VALUES ('주식 / 투자');
--- INSERT INTO study_room_category (categories_name) VALUES ('독서');
--- INSERT INTO study_room_category (categories_name) VALUES ('자격증');
--- INSERT INTO study_room_category (categories_name) VALUES ('면접 준비');
--- INSERT INTO study_room_category (categories_name) VALUES ('어학시험');
--- INSERT INTO study_room_category (categories_name) VALUES ('코딩테스트');
--- INSERT INTO study_room_category (categories_name) VALUES ('웹 개발');
--- -- 필요시 더 추가 가능
+
 select 1;

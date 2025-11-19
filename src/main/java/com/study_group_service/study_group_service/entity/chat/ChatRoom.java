@@ -1,28 +1,20 @@
-package com.study_group_service.study_group_service.entity.chat;
+package com.study_group_service.study_group_service.domain.chat;
 
-import com.study_group_service.study_group_service.entity.study.StudyRoom;
+import com.study_group_service.study_group_service.domain.study.StudyRoom;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatRoom {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "chat_room_id")
     private Long id;
-
-    @Column(unique = true, nullable = false)
-    @Builder.Default
-    private UUID uuid = UUID.randomUUID();
 
     @Column(name = "chat_room_name")
     private String name;
@@ -30,15 +22,4 @@ public class ChatRoom {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_room_id", referencedColumnName = "study_room_id")
     private StudyRoom studyRoom;
-
-    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<ChatRoomMessages> messages = new ArrayList<>();
-
-    @PrePersist
-    private void prePersist() {
-        if (this.uuid == null) {
-            this.uuid = UUID.randomUUID();
-        }
-    }
 }

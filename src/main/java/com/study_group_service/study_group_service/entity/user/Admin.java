@@ -1,13 +1,15 @@
-package com.study_group_service.study_group_service.entity.user;
+package com.study_group_service.study_group_service.domain.user;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class Admin {
 
     @Id
@@ -17,7 +19,7 @@ public class Admin {
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-    private User user;
+    private Users user;
 
     private String email;
     private String password;

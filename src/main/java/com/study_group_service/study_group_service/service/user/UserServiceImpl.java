@@ -1,91 +1,78 @@
-package com.study_group_service.study_group_service.service.user;
+package com.study_group_service.study_group_service.service.users;
 
-import com.study_group_service.study_group_service.dto.user.UserDTO;
+import com.study_group_service.study_group_service.dto.users.UsersDTO;
 import com.study_group_service.study_group_service.entity.user.Admin;
-import com.study_group_service.study_group_service.entity.user.User;
+import com.study_group_service.study_group_service.entity.user.Users;
 import com.study_group_service.study_group_service.enums.Role;
-import com.study_group_service.study_group_service.event.user.UserProfileUpdated;
-import com.study_group_service.study_group_service.event.user.UserRegistered;
-import com.study_group_service.study_group_service.exception.user.AlreadyEmailExistsException;
-import com.study_group_service.study_group_service.exception.user.UserNotFoundException;
-import com.study_group_service.study_group_service.mapper.user.AdminMapper;
-import com.study_group_service.study_group_service.mapper.user.UserMapper;
+import com.study_group_service.study_group_service.exception.users.AlreadyEmailExistsException;
+import com.study_group_service.study_group_service.exception.users.UserNotFoundException;
+import com.study_group_service.study_group_service.mapper.users.AdminMapper;
+import com.study_group_service.study_group_service.mapper.users.UsersMapper;
 import com.study_group_service.study_group_service.message.ErrorMessage;
-import com.study_group_service.study_group_service.repository.user.AdminJpaRepository;
-import com.study_group_service.study_group_service.repository.user.UserJpaRepository;
+import com.study_group_service.study_group_service.message.SuccessMessage;
+import com.study_group_service.study_group_service.repository.users.AdminJpaRepository;
+import com.study_group_service.study_group_service.repository.users.UsersJpaRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UsersServiceImpl implements UsersService {
 
-    private final UserJpaRepository userJpaRepository;
+    private final UsersJpaRepository usersJpaRepository;
     private final AdminJpaRepository adminJpaRepository;
     private final ErrorMessage errorMessage;
-    private final UserMapper userMapper;
+    private final UsersMapper usersMapper;
     private final AdminMapper adminMapper;
-    private final ApplicationEventPublisher eventPublisher;
 
     // 모든 회원 조회
     @Override
     @Transactional
-    public List<UserDTO> getUsers() {
-        List<User> users = userJpaRepository.findAll();
+    public List<UsersDTO> getUsers() {
+        List<Users> users = usersJpaRepository.findAll();
 
         if (users.isEmpty()) {
             throw new UserNotFoundException(errorMessage.showNoUserMessage());
         }
 
-        return userMapper.toDto(users);
+        return usersMapper.toDto(users);
     }
 
     // 특정 회원 조회
     @Override
     @Transactional
-    public UserDTO getUserById(Long id) {
-        User user = userJpaRepository.findById(id)
+    public UsersDTO getUserById(Long id) {
+        Users user = usersJpaRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserMessage()));
-        return userMapper.toDto(user);
+        return usersMapper.toDto(user);
     }
 
     // 특정 회원 조회(이메일)
     @Override
     @Transactional
-    public UserDTO getUserByEmail(String email) {
-        User user = userJpaRepository.findByEmail(email)
+    public UsersDTO getUserByEmail(String email) {
+        Users user = usersJpaRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserEmailMessage()));
 
-        return userMapper.toDto(user);
-    }
-
-    // 특정 회원 조회(UUID)
-    @Override
-    @Transactional
-    public UserDTO getUserByUuid(UUID uuid) {
-        User user = userJpaRepository.findByUuid(uuid)
-                .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserMessage()));
-
-        return userMapper.toDto(user);
+        return usersMapper.toDto(user);
     }
 
     // 회원 저장
     @Override
     @Transactional
-    public UserDTO setUsers(UserDTO userDTO) {
-        if (userJpaRepository.existsByEmail(userDTO.getEmail())) {
+    public UsersDTO setUsers(UsersDTO usersDTO) {
+        if (usersJpaRepository.existsByEmail(usersDTO.getEmail())) {
             throw new AlreadyEmailExistsException(errorMessage.showAlreadyUseEmailMessage());
         }
 
-        User users = userMapper.toEntity(userDTO);
+        Users users = usersMapper.toEntity(usersDTO);
+        users.assignDefaultRoleIfNull();
+        users.assignCreatedAtNow();
 
-        User savedUser = userJpaRepository.save(users);
+        Users savedUser = usersJpaRepository.save(users);
 
         Optional.of(savedUser)
                 .filter(user -> user.getRole() == Role.ADMIN)
@@ -97,88 +84,29 @@ public class UserServiceImpl implements UserService {
                         .build())
                 .ifPresent(adminJpaRepository::save);
 
-        // 사용자 등록 이벤트 발행
-        UserRegistered userRegisteredEvent = new UserRegistered(
-                savedUser.getUuid(),
-                LocalDateTime.now(),
-                savedUser.getName()
-        );
-        eventPublisher.publishEvent(userRegisteredEvent);
-
-        return userMapper.toDto(savedUser);
-    }
-
-    // 사용자 프로필 업데이트
-    @Override
-    @Transactional
-    public UserDTO updateUserProfile(UUID userUuid, UserDTO userDTO) {
-        User existingUser = userJpaRepository.findByUuid(userUuid)
-                .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserMessage()));
-
-        String oldNickname = existingUser.getName();
-        
-        // 기존 사용자 정보를 기반으로 새로운 DTO 생성 (업데이트할 필드만 변경)
-        UserDTO updatedUserDTO = UserDTO.builder()
-                .id(existingUser.getId())
-                .uuid(existingUser.getUuid())
-                .email(existingUser.getEmail())
-                .password(existingUser.getPassword())
-                .name(userDTO.getName()) // 업데이트된 이름
-                .phone(userDTO.getPhone()) // 업데이트된 전화번호
-                .created_at(existingUser.getCreated_at())
-                .role(existingUser.getRole())
-                .consecutiveAttendance(existingUser.getConsecutiveAttendance())
-                .roomCount(existingUser.getRoomCount())
-                .lastAttendanceDate(existingUser.getLastAttendanceDate())
-                .build();
-        
-        // DTO를 엔티티로 변환하여 저장
-        User updatedUser = userMapper.toEntity(updatedUserDTO);
-        updatedUser = userJpaRepository.save(updatedUser);
-
-        // 사용자 프로필 업데이트 이벤트 발행
-        UserProfileUpdated profileUpdatedEvent = new UserProfileUpdated(
-                updatedUser.getUuid(),
-                oldNickname,
-                updatedUser.getName(),
-                "name,phone", // 업데이트된 필드들
-                LocalDateTime.now()
-        );
-        eventPublisher.publishEvent(profileUpdatedEvent);
-
-        return userMapper.toDto(updatedUser);
+        return usersMapper.toDto(savedUser);
     }
 
     // 특정 회원 삭제
     @Override
     @Transactional
     public void deleteUser(Long id) {
-        User user = userJpaRepository.findById(id)
+        Users users = usersJpaRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserMessage()));
 
-        userJpaRepository.delete(user);
-    }
-
-    // 특정 회원 삭제(UUID)
-    @Override
-    @Transactional
-    public void deleteUserByUuid(UUID uuid) {
-        User user = userJpaRepository.findByUuid(uuid)
-                .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserMessage()));
-
-        userJpaRepository.delete(user);
+        usersJpaRepository.delete(users);
     }
 
     // 관리자로 변경
     @Override
     @Transactional
     public void updateUserRoleToAdmin(String email) {
-        User user = userJpaRepository.findByEmail(email)
+        Users user = usersJpaRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserEmailMessage()));
 
         // 엔티티에 정의한 메서드 사용
         user.promoteToAdmin();
-        userJpaRepository.save(user);
+        usersJpaRepository.save(user);
 
         Admin admin = adminJpaRepository.findByEmail(email)
                 .map(existingAdmin -> {
@@ -188,48 +116,6 @@ public class UserServiceImpl implements UserService {
                 .orElseGet(() -> adminMapper.toEntity(user));
 
         adminJpaRepository.save(admin);
-    }
-
-    @Override
-    @Transactional
-    public void checkAttendance(Long userId) {
-        User user = userJpaRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserMessage()));
-        user.checkAttendance(java.time.LocalDate.now());
-        userJpaRepository.save(user);
-    }
-
-    @Override
-    @Transactional
-    public void checkAttendanceByUuid(UUID userUuid) {
-        User user = userJpaRepository.findByUuid(userUuid)
-                .orElseThrow(() -> new UserNotFoundException(errorMessage.showNoUserMessage()));
-        user.checkAttendance(java.time.LocalDate.now());
-        userJpaRepository.save(user);
-    }
-
-    @Override
-    @Transactional
-    // 임시 (회의 후 로직 생성 예정)
-    public void joinRoom(Long userId) {
-    }
-
-    @Override
-    @Transactional
-    // 임시 (회의 후 로직 생성 예정)
-    public void joinRoomByUuid(UUID userUuid) {
-    }
-
-    @Override
-    @Transactional
-    // 임시 (회의 후 로직 생성 예정)
-    public void leaveRoom(Long userId) {
-    }
-
-    @Override
-    @Transactional
-    // 임시 (회의 후 로직 생성 예정)
-    public void leaveRoomByUuid(UUID userUuid) {
     }
 
 

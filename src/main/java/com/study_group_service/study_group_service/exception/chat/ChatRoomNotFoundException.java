@@ -1,9 +1,7 @@
-package com.study_group_service.study_group_service.exception.chat;
+package com.study_group_service.study_group_service.exception.study;
 
-import static com.study_group_service.study_group_service.message.ErrorMessage.showNoChatRoomMessage;
-
-public class ChatRoomNotFoundException extends RuntimeException {
-    public ChatRoomNotFoundException() {
-        super(showNoChatRoomMessage());
+public class StudyRoomNotFoundException extends RuntimeException {
+    public StudyRoomNotFoundException(String message) {
+        super(message);
     }
 }

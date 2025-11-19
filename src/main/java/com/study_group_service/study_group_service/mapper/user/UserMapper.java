@@ -1,50 +1,39 @@
-package com.study_group_service.study_group_service.mapper.user;
+package com.study_group_service.study_group_service.mapper.users;
 
-import com.study_group_service.study_group_service.dto.user.UserDTO;
-import com.study_group_service.study_group_service.entity.user.User;
-import com.study_group_service.study_group_service.repository.study.StudyRoomParticipantJpaRepository;
-import lombok.RequiredArgsConstructor;
+import com.study_group_service.study_group_service.dto.users.UsersDTO;
+import com.study_group_service.study_group_service.entity.user.Users;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-@RequiredArgsConstructor
-public class UserMapper {
-    private final StudyRoomParticipantJpaRepository participantRepo;
+public class UsersMapper {
 
-    public UserDTO toDto(User user) {
-        long roomCount = participantRepo.countByUserId(user.getId());
-        return UserDTO.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .name(user.getName())
-                .phone(user.getPhone())
-                .created_at(user.getCreated_at())
-                .role(user.getRole())
-                .consecutiveAttendance(user.getConsecutiveAttendance())
-                .roomCount(roomCount)
-                .lastAttendanceDate(user.getLastAttendanceDate())
+    public UsersDTO toDto(Users users) {
+        return UsersDTO.builder()
+                .id(users.getId())
+                .email(users.getEmail())
+                .password(users.getPassword())
+                .name(users.getName())
+                .phone(users.getPhone())
+                .created_at(users.getCreated_at())
+                .role(users.getRole())
                 .build();
     }
 
-    public User toEntity(UserDTO dto) {
-        return User.builder()
+    public Users toEntity(UsersDTO dto) {
+        return Users.builder()
                 .email(dto.getEmail())
                 .password(dto.getPassword())
                 .name(dto.getName())
                 .phone(dto.getPhone())
                 .created_at(dto.getCreated_at())
                 .role(dto.getRole())
-                .consecutiveAttendance(dto.getConsecutiveAttendance())
-                .roomCount(dto.getRoomCount())
-                .lastAttendanceDate(dto.getLastAttendanceDate())
                 .build();
     }
 
-    public List<UserDTO> toDto(List<User> users) {
+    public List<UsersDTO> toDto(List<Users> users) {
         return users.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
